@@ -61,8 +61,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        //Para dar un tiempo de espera:
         await Task.Delay(3000);
-
+       
         //Lista Vacía.
         //Peliculas = new List<Pelicula>();
         Peliculas = ObtenerPeliculas();
