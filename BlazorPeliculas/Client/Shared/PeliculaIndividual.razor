@@ -1,0 +1,13 @@
+﻿<div>
+    <div>
+        <p>Título: <b>@(Pelicula.Titulo)</b></p>
+        <p>Lanzamiento: <b>@Pelicula.Lanzamiento.ToString("dd MMM yyyy")</b></p>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public Pelicula Pelicula { get; set; }
+
+}
