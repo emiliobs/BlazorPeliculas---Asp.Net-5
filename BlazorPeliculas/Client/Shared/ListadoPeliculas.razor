@@ -14,7 +14,8 @@ else
         <input  type="checkbox" @bind="MostrarBotones" />
         @foreach (var pelicula in Peliculas)
         {
-            <PeliculaIndividual Pelicula="pelicula" MostrarBotones="MostrarBotones"></PeliculaIndividual>
+            <PeliculaIndividual Pelicula="pelicula" MostrarBotones="MostrarBotones" EliminarPelicula="EliminarPelicula"></PeliculaIndividual>
+            
         }
     </div>
    
@@ -24,7 +25,16 @@ else
 
     [Parameter]
     public List<Pelicula> Peliculas { get; set; }
+    public Pelicula Pelicula { get; set; } 
     bool MostrarBotones = true;
+   
+
+    void EliminarPelicula(Pelicula pelicula)
+    {
+        Peliculas.Remove(pelicula);
+        Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
+    }
+
 }
 
  
