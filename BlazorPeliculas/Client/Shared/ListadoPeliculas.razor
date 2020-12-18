@@ -1,0 +1,63 @@
+﻿@if (Peliculas == null)
+{
+    <img src="https://gifimage.net/wp-content/uploads/2017/08/spinner-gif-13.gif" />
+    <text>Cargando.....</text>
+}
+else if (Peliculas.Count == 0)
+{
+    <text>No hay registros para mostrar</text>
+}
+else
+{
+    <div>
+        <h3>Películas with foreach</h3>
+        @foreach (var pelicula in Peliculas)
+        {
+            <div>
+                <p>Título: @((MarkupString)pelicula.Titulo)</p>
+                <p>Lanzamiento: <b>@pelicula.Lanzamiento.ToString("dd MMM yyyy")</b></p>
+            </div>
+        }
+    </div>
+
+    <hr />
+    <h3>Películas with for</h3>
+    @for (int i = 0; i < Peliculas.Count; i++)
+    {
+        <div>
+            @if (i == Peliculas.Count - 1)
+            {
+                <p>Esta es la ültima Película.</p>
+            }
+            <p>@(i+1)) - Titulo: <b>@Peliculas[i].Titulo</b></p>
+            <p>Fecha Lanzamineto: <b>@Peliculas[i].Lanzamiento.ToString("dd MMM yyyy")</b></p>
+        </div>
+    }
+}
+
+@code{
+
+    private List<Pelicula> Peliculas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Para dar un tiempo de espera:
+        await Task.Delay(3000);
+
+      
+        Peliculas = ObtenerPeliculas();
+    }
+
+    private List<Pelicula> ObtenerPeliculas()
+    {
+        return new List<Pelicula>
+        {
+             new Pelicula { Titulo = "<b>Spider-Man</b>: Far From Home", Lanzamiento = new DateTime(2020,5,5) },
+             new Pelicula { Titulo = "<i>Maona</i>", Lanzamiento = new DateTime(2019,12,12) },
+            new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
+        };
+    }
+
+}
+
+ 
