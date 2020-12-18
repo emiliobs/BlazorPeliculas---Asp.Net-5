@@ -16,20 +16,7 @@ else
             <PeliculaIndividual Pelicula="pelicula"></PeliculaIndividual>
         }
     </div>
-
-    <hr />
-    <h3>Películas with for</h3>
-    @for (int i = 0; i < Peliculas.Count; i++)
-    {
-        <div>
-            @if (i == Peliculas.Count - 1)
-            {
-                <p>Esta es la ültima Película.</p>
-            }
-            <p>@(i + 1)) - Titulo: <b>@Peliculas[i].Titulo</b></p>
-            <p>Fecha Lanzamineto: <b>@Peliculas[i].Lanzamiento.ToString("dd MMM yyyy")</b></p>
-        </div>
-    }
+   
 }
 
 @code{

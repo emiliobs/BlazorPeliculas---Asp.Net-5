@@ -6,9 +6,24 @@
     <ListadoPeliculas Peliculas="ObtenerPeliculas()"></ListadoPeliculas>
 </div>
 
+<div>
+    <h2>Crear nueva Película</h2>
+    @*<EjemploTexBox placeholder="Nombre Película" disabled="true"></EjemploTexBox>*@
+    @*<EjemploTexBox @attributes="@(new Dictionary<string, object> { { "placeholder", "Nuevo placeholder" },
+                                                                   { "disabled","true" } 
+                                                                  })"></EjemploTexBox>*@
+    <EjemploTexBox placeholder="pleceholder index"></EjemploTexBox>
+</div>
+
 
 @code
 {
+
+    private Dictionary<string, object> EjemploTexboxParameters = new Dictionary<string, object>()
+    {
+        { "placeholder", "Nombre Pelicula" },
+        {"disabled","true" }
+    };
 
     private List<Pelicula> ObtenerPeliculas()
     {
