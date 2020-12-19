@@ -1,8 +1,12 @@
 ﻿@page "/counter"
+@inject ServiciosSingleton ServiciosSingleton
+@inject ServiciosTransient ServiciosTransient
 
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
+<p>Singleton count: @ServiciosSingleton.Valor</p>
+<p>Transient count: @ServiciosTransient.Valor</p>
 
 
 
@@ -16,5 +20,7 @@
     private void IncrementCount()
     {
         currentCount++;
+        ServiciosSingleton.Valor = currentCount;
+        ServiciosTransient.Valor = currentCount;
     }
 }
