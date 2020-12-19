@@ -1,4 +1,6 @@
-﻿    <div>
+﻿@inject IJSRuntime js
+   
+ <div>
         <h3>Películas with foreach</h3>
         <input type="checkbox" @bind="MostrarBotones" />
 
@@ -29,13 +31,19 @@
     bool MostrarBotones = true;
 
 
-    
 
 
-    void EliminarPelicula(Pelicula pelicula)
+
+    async Task EliminarPelicula(Pelicula pelicula)
     {
-        Peliculas.Remove(pelicula);
-        Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
+
+        var confirmado = await js.Confirm($"¿Desea borrar la película: {pelicula.Titulo}?");
+
+        if (confirmado)
+        {
+            Peliculas.Remove(pelicula);
+            Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}"); 
+        }
     }
 
 }
