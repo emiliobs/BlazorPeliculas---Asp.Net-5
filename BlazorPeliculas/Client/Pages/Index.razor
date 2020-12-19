@@ -3,25 +3,8 @@
 <div>
     <h3>Cargando</h3>
     <hr />
-    <ListadoPeliculas>
-        @*<Cargando>
-            <span style="color:red">No Hay Datos!!!!</span>
-        </Cargando>
-        <NOHayRegistros>
-            <text style="color:deepskyblue">MensajePersonalizado: No hay registros!!!</text>
-        </NOHayRegistros>*@
-    </ListadoPeliculas>
-    <hr />
-    <h3>NO hay Películas</h3>
-    <hr />
-    <ListadoPeliculas Peliculas="ObtenerPeliculas()">
-        <Cargando>
-            <span style="color:red">NO Hay Datos!!!!</span>
-        </Cargando>
-        <NOHayRegistros>
-            <text style="color:deepskyblue">MensajePersonalizado: No hay registros!!!</text>
-        </NOHayRegistros>
-    </ListadoPeliculas>
+    <ListadoPeliculas Peliculas="ObtenerPeliculas()"></ListadoPeliculas>
+    
 </div>
 
 <hr />
@@ -46,13 +29,13 @@
 
     private List<Pelicula> ObtenerPeliculas()
     {
-        return new List<Pelicula>();
-        //return new List<Pelicula>
-        //{
-        //     new Pelicula { Titulo = "Spider-Man Far From Home", Lanzamiento = new DateTime(2020,5,5) },
-        //     new Pelicula { Titulo = "Maona", Lanzamiento = new DateTime(2019,12,12) },
-        //     new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
-        //};
+
+        return new List<Pelicula>
+        {
+             new Pelicula { Titulo = "Spider-Man Far From Home", Lanzamiento = new DateTime(2020,5,5) },
+             new Pelicula { Titulo = "Maona", Lanzamiento = new DateTime(2019,12,12) },
+             new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
+        };
     }
 
 }

@@ -1,41 +1,17 @@
-﻿@if (Peliculas == null)
-{
-    
-    if (Cargando == null)
-    {
-        <img src="https://gifimage.net/wp-content/uploads/2017/08/spinner-gif-13.gif" />
-        <text>Cargando.....</text>
-    }
-    else
-    {
-        @Cargando
-
-    }
-}
-else if (Peliculas.Count == 0)
-{
-   if (NOHayRegistros == null)
-	{
-		 <text>No hay registros para mostrar</text> 
-    }
-    else
-    {
-        @NOHayRegistros
-    }
-}
-else
-{
-    <div>
+﻿    <div>
         <h3>Películas with foreach</h3>
         <input type="checkbox" @bind="MostrarBotones" />
-        @foreach (var pelicula in Peliculas)
-        {
-            <PeliculaIndividual Pelicula="pelicula" MostrarBotones="MostrarBotones" EliminarPelicula="EliminarPelicula"></PeliculaIndividual>
 
-        }
+        <ListadoGenerico Listado="Peliculas">
+            <HayRegistros Context="pelicula">
+                <PeliculaIndividual Pelicula="pelicula" MostrarBotones="MostrarBotones" EliminarPelicula="EliminarPelicula"></PeliculaIndividual>
+            </HayRegistros>
+        </ListadoGenerico>
+
+       
     </div>
 
-}
+
 
 @code{
 
@@ -49,6 +25,7 @@ else
     public RenderFragment NOHayRegistros { get; set; }
 
     public Pelicula Pelicula { get; set; }
+
     bool MostrarBotones = true;
 
 
