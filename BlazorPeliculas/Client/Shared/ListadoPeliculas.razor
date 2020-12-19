@@ -29,6 +29,28 @@
     bool MostrarBotones = true;
 
 
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"OnInitialized - Cantidad Películas: {Peliculas.Count}");
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine($"OnParametersSet - Cantidad Pelúculas: {Peliculas.Count}");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Console.WriteLine($"OnAfterRender: Primera vez: {firstRender}");
+    }
+
+    protected override bool ShouldRender()
+    {
+        Console.WriteLine("ShouldRender");
+        return true;
+    }
+
+
     void EliminarPelicula(Pelicula pelicula)
     {
         Peliculas.Remove(pelicula);

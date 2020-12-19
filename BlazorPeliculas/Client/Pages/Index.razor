@@ -3,7 +3,10 @@
 <div>
     <h3>Cargando</h3>
     <hr />
-    <ListadoPeliculas Peliculas="ObtenerPeliculas()"></ListadoPeliculas>
+    <ListadoPeliculas Peliculas="Peliculas"></ListadoPeliculas>
+
+    <br />
+<button class="btn btn-info" @onclick="AgregarPelicula">Aggregar Películas.</button>
     
 </div>
 
@@ -21,21 +24,39 @@
 @code
 {
 
+    public List<Pelicula> Peliculas { get; set; }
+
+
     private Dictionary<string, object> EjemploTexboxParameters = new Dictionary<string, object>()
     {
         { "placeholder", "Nombre Pelicula" },
         {"disabled","true" }
     };
 
-    private List<Pelicula> ObtenerPeliculas()
+    protected override void OnInitialized()
     {
-
-        return new List<Pelicula>
+        Peliculas = new List<Pelicula>
         {
              new Pelicula { Titulo = "Spider-Man Far From Home", Lanzamiento = new DateTime(2020,5,5) },
              new Pelicula { Titulo = "Maona", Lanzamiento = new DateTime(2019,12,12) },
              new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
         };
     }
+
+    void AgregarPelicula ()
+    {
+        Peliculas.Add(new Pelicula { Titulo = "Todo por Emilio",   Lanzamiento =  DateTime.Today });
+    }
+
+    //private List<Pelicula> ObtenerPeliculas()
+    //{
+
+    //    return new List<Pelicula>
+    //    {
+    //         new Pelicula { Titulo = "Spider-Man Far From Home", Lanzamiento = new DateTime(2020,5,5) },
+    //         new Pelicula { Titulo = "Maona", Lanzamiento = new DateTime(2019,12,12) },
+    //         new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
+    //    };
+    //}
 
 }
