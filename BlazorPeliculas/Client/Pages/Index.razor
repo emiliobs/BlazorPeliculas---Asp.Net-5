@@ -1,6 +1,6 @@
 ﻿@page "/"
 @inject ServiciosSingleton ServiciosSingleton
-@inject ServiciosTransient ServiciosTransient
+@inject IRepositorioPelicula  repositorio
 
 <p>Singleton count: @ServiciosSingleton.Valor</p>
 
@@ -39,12 +39,7 @@
 
     protected override void OnInitialized()
     {
-        Peliculas = new List<Pelicula>
-    {
-             new Pelicula { Titulo = "Spider-Man Far From Home", Lanzamiento = new DateTime(2020,5,5) },
-             new Pelicula { Titulo = "Maona", Lanzamiento = new DateTime(2019,12,12) },
-             new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
-        };
+        Peliculas = repositorio.ObtenerPelicula();
     }
 
     void AgregarPelicula()

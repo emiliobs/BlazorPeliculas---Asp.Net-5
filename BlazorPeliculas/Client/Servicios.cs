@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BlazorPeliculas.Client
+﻿namespace BlazorPeliculas.Client
 {
     public class ServiciosSingleton
     {
@@ -16,5 +11,5 @@ namespace BlazorPeliculas.Client
 
     }
 
-   
+
 }
