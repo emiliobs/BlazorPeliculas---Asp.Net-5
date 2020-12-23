@@ -9,13 +9,18 @@
                 <PeliculaIndividual Pelicula="pelicula" MostrarBotones="MostrarBotones" EliminarPelicula="EliminarPelicula"></PeliculaIndividual>
             </HayRegistros>
         </ListadoGenerico>
-
        
     </div>
 
 
+<Confirmacion @ref="confirmacion" onConfirm="EliminarPeliculaConfirmacion" onCancel="OnCAncelConfirmacion">
+    <div>¿Desea Borrar la Película.?</div>
+</Confirmacion>
+
 
 @code{
+
+    Confirmacion confirmacion;
 
     [Parameter]
     public List<Pelicula> Peliculas { get; set; }
@@ -30,7 +35,7 @@
 
     bool MostrarBotones = true;
 
-   
+
 
 
 
@@ -39,17 +44,32 @@
     async Task EliminarPelicula(Pelicula pelicula)
     {
 
-        var confirmado = await js.Confirm($"¿Desea borrar la película: {pelicula.Titulo}?");
+        confirmacion.Mostrar();
+        peliculaBorrar = pelicula;
+        //var confirmado = await js.Confirm($"¿Desea borrar la película: {pelicula.Titulo}?");
 
-        if (confirmado)
-        {
-            Peliculas.Remove(pelicula);
-            Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
+        //if (confirmado)
+        //{
+        //    Peliculas.Remove(pelicula);
+        //    Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
 
-        }
+        //}
     }
 
-   
+    Pelicula peliculaBorrar;
+    void EliminarPeliculaConfirmacion()
+    {
+        Peliculas.Remove(peliculaBorrar);
+        confirmacion.Ocultar();
+        peliculaBorrar = null;
+    }
+
+    void OnCAncelConfirmacion()
+    {
+        confirmacion.Ocultar();
+        peliculaBorrar = null;
+    }
+
 
 }
 

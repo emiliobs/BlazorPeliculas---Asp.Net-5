@@ -7,7 +7,7 @@
 <div>
     <h3>Cargando</h3>
     <hr />
-    <ListadoPeliculas Peliculas="Peliculas"></ListadoPeliculas>
+    <ListadoPeliculas  Peliculas="Peliculas"></ListadoPeliculas>
 
     <br />
     <button class="btn btn-info" @onclick="AgregarPelicula">Aggregar Películas.</button>
@@ -30,6 +30,8 @@
 
     public List<Pelicula> Peliculas { get; set; }
 
+    
+
 
     private Dictionary<string, object> EjemploTexboxParameters = new Dictionary<string, object>()
 {
@@ -39,6 +41,8 @@
 
     protected override void OnInitialized()
     {
+        
+
         Peliculas = repositorio.ObtenerPelicula();
     }
 
