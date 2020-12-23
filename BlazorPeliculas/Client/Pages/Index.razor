@@ -1,8 +1,9 @@
 ﻿@page "/"
 @inject ServiciosSingleton ServiciosSingleton
 @inject IRepositorioPelicula  repositorio
+@using static BlazorPeliculas.Client.Shared.MainLayout
 
-<p>Singleton count: @ServiciosSingleton.Valor</p>
+<p style="color:@AppState.Color; font-size: @AppState.Size;">Singleton count: @ServiciosSingleton.Valor</p>
 
 <div>
     <h3>Cargando</h3>
@@ -28,9 +29,11 @@
 @code
 {
 
+    [CascadingParameter] public AppState  AppState { get; set; }
+
     public List<Pelicula> Peliculas { get; set; }
 
-    
+
 
 
     private Dictionary<string, object> EjemploTexboxParameters = new Dictionary<string, object>()
@@ -41,7 +44,7 @@
 
     protected override void OnInitialized()
     {
-        
+
 
         Peliculas = repositorio.ObtenerPelicula();
     }
