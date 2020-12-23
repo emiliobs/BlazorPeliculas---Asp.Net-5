@@ -18,12 +18,12 @@ namespace BlazorPeliculas.Client.Pages
         private int currentCount = 0;
         static int currentCountStatic = 0;
         IJSObjectReference modulo;
-        
+
 
         [JSInvokable]
-        public async Task  IncrementCount()
+        public async Task IncrementCount()
         {
-            modulo = await Js.InvokeAsync<IJSObjectReference>("import","./js/Counter.js");
+            modulo = await Js.InvokeAsync<IJSObjectReference>("import", "./js/Counter.js");
             await modulo.InvokeVoidAsync("mostrarAlerta", "Emilio Please styding too mach");
 
             currentCount++;
