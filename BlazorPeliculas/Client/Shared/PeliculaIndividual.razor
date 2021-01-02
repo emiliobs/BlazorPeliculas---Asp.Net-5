@@ -1,14 +1,11 @@
-﻿<div>
+﻿<div style="margin-right: 2%; margin-bottom: 10px; text-align: center;">
+    <a>
+        <img src="@Pelicula.Poster" alt="Poster" style="width: 225px; height:300px;" />
+    </a>
+    <p style="max-width: 225px; height: 44px; font-size: 15px; font-weight: bold;">@Pelicula.TituloCortado</p>
     <div>
-        <p>Título: <b>@(Pelicula.Titulo)</b></p>
-        <p>Lanzamiento: <b>@Pelicula.Lanzamiento.ToString("dd MMM yyyy")</b></p>
-        @if (MostrarBotones)
-        {
-
-            <div>
-                <button @onclick="@(() => EliminarPelicula.InvokeAsync(Pelicula))" class="btn btn-danger">Borrar</button>
-            </div>
-        }
+        <a class="btn btn-info">Editar</a>
+        <button type="button" class="btn btn-danger" @onclick="@(() => EliminarPelicula.InvokeAsync(Pelicula))">Eliminar</button>
     </div>
 </div>
 
@@ -16,11 +13,11 @@
 
     [Parameter]
     public Pelicula Pelicula { get; set; }
+
     [Parameter]
     public bool MostrarBotones { get; set; } = false;
-    [Parameter]
-    public EventCallback<Pelicula> EliminarPelicula { get; set; }
 
-    
+    [Parameter]
+    public EventCallback<Pelicula> EliminarPelicula { get; set; }    
 
 }

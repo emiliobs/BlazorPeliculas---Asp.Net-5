@@ -1,24 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Drawing;
 using System.Threading.Tasks;
-using static BlazorPeliculas.Client.Shared.MainLayout;
 
 namespace BlazorPeliculas.Client.Pages
 {
     public partial class Counter
     {
-        [Inject]
-        private ServiciosSingleton ServiciosSingleton { get; set; }
 
-        [Inject]
-        private ServiciosTransient ServiciosTransient { get; set; }
 
         [Inject]
         protected IJSRuntime Js { get; set; }
 
-        [CascadingParameter] public AppState appState  { get; set; }
-      
+
 
         private int currentCount = 0;
         static int currentCountStatic = 0;
@@ -32,8 +25,7 @@ namespace BlazorPeliculas.Client.Pages
             await modulo.InvokeVoidAsync("mostrarAlerta", "Emilio Please styding too mach");
 
             currentCount++;
-            ServiciosSingleton.Valor = currentCount;
-            ServiciosTransient.Valor = currentCount;
+
             currentCountStatic++;
 
 

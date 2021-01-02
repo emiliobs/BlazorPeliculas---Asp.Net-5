@@ -1,46 +1,23 @@
 ﻿@page "/"
-@inject ServiciosSingleton ServiciosSingleton
 @inject IRepositorioPelicula  repositorio
-@using static BlazorPeliculas.Client.Shared.MainLayout
 
-<p style="color:@AppState.Color; font-size: @AppState.Size;">Singleton count: @ServiciosSingleton.Valor</p>
 
 <div>
-    <h3>Cargando</h3>
-    <hr />
-    <ListadoPeliculas  Peliculas="Peliculas"></ListadoPeliculas>
-
-    <br />
-    <button class="btn btn-info" @onclick="AgregarPelicula">Aggregar Películas.</button>
-
+   <h3>Películas</h3>
+   <hr />
+    
+        <ListadoPeliculas Peliculas="Peliculas"></ListadoPeliculas>
+   
 </div>
 
-<hr />
-<div>
-    <h2>Crear nueva Película</h2>
-    @*<EjemploTexBox placeholder="Nombre Película" disabled="true"></EjemploTexBox>*@
-    @*<EjemploTexBox @attributes="@(new Dictionary<string, object> { { "placeholder", "Nuevo placeholder" },
-         { "disabled","true" }
-        })"></EjemploTexBox>*@
-    <EjemploTexBox placeholder="pleceholder index"></EjemploTexBox>
-</div>
+
 
 
 @code
 {
 
-    [CascadingParameter] public AppState  AppState { get; set; }
-
     public List<Pelicula> Peliculas { get; set; }
 
-
-
-
-    private Dictionary<string, object> EjemploTexboxParameters = new Dictionary<string, object>()
-{
-        { "placeholder", "Nombre Pelicula" },
-        {"disabled","true" }
-    };
 
     protected override void OnInitialized()
     {
@@ -49,20 +26,6 @@
         Peliculas = repositorio.ObtenerPelicula();
     }
 
-    void AgregarPelicula()
-    {
-        Peliculas.Add(new Pelicula { Titulo = "Todo por Emilio", Lanzamiento = DateTime.Today });
-    }
 
-    //private List<Pelicula> ObtenerPeliculas()
-    //{
-
-    //    return new List<Pelicula>
-    //    {
-    //         new Pelicula { Titulo = "Spider-Man Far From Home", Lanzamiento = new DateTime(2020,5,5) },
-    //         new Pelicula { Titulo = "Maona", Lanzamiento = new DateTime(2019,12,12) },
-    //         new Pelicula { Titulo = "Inception" ,Lanzamiento = new DateTime(2020,11,11) },
-    //    };
-    //}
 
 }

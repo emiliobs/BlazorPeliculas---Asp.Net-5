@@ -1,73 +1,41 @@
 ﻿@inject IJSRuntime js
-   
- <div>
-        <h3>Películas with foreach</h3>
-        <input type="checkbox" @bind="MostrarBotones" />
+
+    <div style="display:flex; flex-wrap:wrap; align-items:center;">
 
         <ListadoGenerico Listado="Peliculas">
             <HayRegistros Context="pelicula">
-                <PeliculaIndividual Pelicula="pelicula" MostrarBotones="MostrarBotones" EliminarPelicula="EliminarPelicula"></PeliculaIndividual>
+                <PeliculaIndividual Pelicula="pelicula" EliminarPelicula="EliminarPelicula"></PeliculaIndividual>
             </HayRegistros>
         </ListadoGenerico>
-       
+
     </div>
 
 
-<Confirmacion @ref="confirmacion" onConfirm="EliminarPeliculaConfirmacion" onCancel="OnCAncelConfirmacion">
-    <div>¿Desea Borrar la Película.?</div>
-</Confirmacion>
+
+
 
 
 @code{
 
-    Confirmacion confirmacion;
 
     [Parameter]
     public List<Pelicula> Peliculas { get; set; }
 
-    [Parameter]
-    public RenderFragment Cargando { get; set; }
-
-    [Parameter]
-    public RenderFragment NOHayRegistros { get; set; }
-
     public Pelicula Pelicula { get; set; }
-
-    bool MostrarBotones = true;
-
-
-
-
-
 
 
     async Task EliminarPelicula(Pelicula pelicula)
     {
 
-        confirmacion.Mostrar();
-        peliculaBorrar = pelicula;
-        //var confirmado = await js.Confirm($"¿Desea borrar la película: {pelicula.Titulo}?");
 
-        //if (confirmado)
-        //{
-        //    Peliculas.Remove(pelicula);
-        //    Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
+        var confirmado = await js.Confirm($"¿Desea borrar la película: {pelicula.Titulo}?");
 
-        //}
-    }
+        if (confirmado)
+        {
+            Peliculas.Remove(pelicula);
+            Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
 
-    Pelicula peliculaBorrar;
-    void EliminarPeliculaConfirmacion()
-    {
-        Peliculas.Remove(peliculaBorrar);
-        confirmacion.Ocultar();
-        peliculaBorrar = null;
-    }
-
-    void OnCAncelConfirmacion()
-    {
-        confirmacion.Ocultar();
-        peliculaBorrar = null;
+        }
     }
 
 
