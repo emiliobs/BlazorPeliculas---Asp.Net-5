@@ -23,8 +23,7 @@ namespace BlazorPeliculas.Client
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ServiciosSingleton>();
-            services.AddTransient<ServiciosTransient>();
+
             services.AddSingleton<IRepositorioPelicula, RepositorioPelicula>();
         }
     }
