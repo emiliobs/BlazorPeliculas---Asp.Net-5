@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using MathNet.Numerics.Statistics;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
 
@@ -11,8 +12,6 @@ namespace BlazorPeliculas.Client.Pages
         [Inject]
         protected IJSRuntime Js { get; set; }
 
-
-
         private int currentCount = 0;
         static int currentCountStatic = 0;
         IJSObjectReference modulo;
@@ -21,8 +20,14 @@ namespace BlazorPeliculas.Client.Pages
         [JSInvokable]
         public async Task IncrementCount()
         {
+
+            var arreglo = new double[] { 1, 2, 3, 4, 5 };
+
+            var max = arreglo.Maximum();
+            var min = arreglo.Minimum();
+
             modulo = await Js.InvokeAsync<IJSObjectReference>("import", "./js/Counter.js");
-            await modulo.InvokeVoidAsync("mostrarAlerta", "Emilio Please styding too mach");
+            await modulo.InvokeVoidAsync("mostrarAlerta", $"El max es {max} y el min es {min}");
 
             currentCount++;
 
@@ -41,7 +46,11 @@ namespace BlazorPeliculas.Client.Pages
 
         protected async Task IncrementoCountJavascript()
         {
+
+
+
             await Js.InvokeVoidAsync("pruebaPuntoNETInstancia", DotNetObjectReference.Create(this));
+
         }
     }
 }
