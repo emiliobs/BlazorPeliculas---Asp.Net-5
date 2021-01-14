@@ -1,9 +1,30 @@
 ﻿@page "/personas/editar/{PersonaId:int}"
 
 <h3>Editar Persona</h3>
+<hr />
+<FormularioPersonas Persona="Persona" OnValidSubmit="Editar"></FormularioPersonas>
 
 @code {
 
     [Parameter] public int PersonaId { get; set; }
+
+    Persona Persona = new Persona();
+
+    protected override void OnInitialized()
+    {
+        Persona = new Persona
+        {
+            Id = PersonaId,
+            Nombre = "Emilio Barrera",
+            FechaDeNacimiento = DateTime.Today,
+        };
+
+        base.OnInitialized();
+    }
+
+    private void Editar()
+    {
+        Console.WriteLine("Editando a la Persona.");
+    }
 
 }
