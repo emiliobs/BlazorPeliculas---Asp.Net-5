@@ -52,3 +52,25 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.form-markdown
+{
+    display: flex;
+}
+.form-markdown textarea{
+    width: 500px;
+    height: 500px;
+    margin-right: 15px;
+}
+
+    .form-markdown .markdown-container{
+        border: 1px dashed black;
+        width: 500px;
+        height: 500px;
+
+    }
+
+.marginlabel
+{
+    margin:0;
+}

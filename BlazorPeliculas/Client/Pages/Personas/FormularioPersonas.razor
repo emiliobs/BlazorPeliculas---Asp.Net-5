@@ -19,8 +19,13 @@
     <div class="form-group">
         <InputImg Label="Foto" ImagenSeleccionada="ImagenSeleccinada" ImagenURL="@imagenURL"></InputImg>
     </div>
-    <div class="form-group">
-
+    <div class="form-group form-markdown">
+        <InputMarkdown @bind-Value="@Persona.Biografia"
+                       For="@(() => Persona.Biografia)"
+                       Label="Biografía"></InputMarkdown>
+        @*<InputMarkdown @bind-Value="@Persona.Biografia"
+        For="@(() => Persona.Biografia)"
+        Label="Biografía" />*@
     </div>
 
     <button class="btn btn-success" type="submit">Guardar Cambios</button>
