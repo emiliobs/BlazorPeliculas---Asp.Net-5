@@ -1,0 +1,69 @@
+﻿<EditForm Model="Pelicula" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <div class="form-group">
+        <label>Título:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Pelicula.Titulo"></InputText>
+            <ValidationMessage For="@(() => Pelicula.Titulo)"></ValidationMessage>
+        </div>
+    </div>
+    <div class="form-inline">
+        <label>En Cartelera: </label>
+        <div>
+            <InputCheckbox @bind-Value="@Pelicula.EnCartelera"></InputCheckbox>
+            <ValidationMessage For="@(() => Pelicula.EnCartelera)"></ValidationMessage>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Trailer:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Pelicula.Trailer"></InputText>
+            <ValidationMessage For="@(() => Pelicula.Trailer)"></ValidationMessage>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Fecha de Lanzamiento:</label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@Pelicula.Lanzamiento"></InputDate>
+            <ValidationMessage For="@(() => Pelicula.Lanzamiento)"></ValidationMessage>
+        </div>
+    </div>
+    <div class="form-group form-markdown">
+        <InputMarkdown @bind-Value="@Pelicula.Resumen"
+                       For="@(() => Pelicula.Resumen)"
+                       Label="Resumen"></InputMarkdown>
+       
+    </div>
+
+    <div class="form-group">
+        <InputImg Label="Foto" ImagenSeleccionada="ImagenSeleccinada" ImagenURL="@imagenURL"></InputImg>
+    </div>
+
+    <button class="btn btn-success mb-2" type="submit">Guardar Cambios</button>
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Pelicula Pelicula { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    string imagenURL;
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(Pelicula.Poster))
+        {
+            imagenURL = Pelicula.Poster;
+            Pelicula.Poster = null;
+        }
+
+        base.OnInitialized();
+    }
+
+    private void ImagenSeleccinada(string imagenBAse4)
+    {
+        Pelicula.Poster = imagenBAse4;
+        imagenURL = null;
+    }
+}
