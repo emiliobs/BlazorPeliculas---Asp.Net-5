@@ -32,11 +32,18 @@
         <InputMarkdown @bind-Value="@Pelicula.Resumen"
                        For="@(() => Pelicula.Resumen)"
                        Label="Resumen"></InputMarkdown>
-       
+
     </div>
 
     <div class="form-group">
         <InputImg Label="Foto" ImagenSeleccionada="ImagenSeleccinada" ImagenURL="@imagenURL"></InputImg>
+    </div>
+
+    <div class="form-group">
+        <label>Género:</label>
+        <div>
+            <SelectorMultiple Seleccionados="Seleccionados" NoSeleccionados="NoSeleccionados"></SelectorMultiple>
+        </div>
     </div>
 
     <button class="btn btn-success mb-2" type="submit">Guardar Cambios</button>
@@ -46,13 +53,25 @@
 @code {
 
     [Parameter] public Pelicula Pelicula { get; set; }
+
     [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter] public List<Genero> GenerosSeleccionados { get; set; }
+
+    [Parameter] public List<Genero> GenerosNoSeleccionados { get; set; }
+
+
+    public List<SelectorMultipleModel> Seleccionados { get; set; } = new List<SelectorMultipleModel>();
+    public List<SelectorMultipleModel> NoSeleccionados { get; set; } = new List<SelectorMultipleModel>();
 
     string imagenURL;
 
     protected override void OnInitialized()
     {
-        if (!string.IsNullOrEmpty(Pelicula.Poster))
+        Seleccionados = GenerosSeleccionados.Select(g => new SelectorMultipleModel(g.Id.ToString(), g.Nombre)).ToList();
+        NoSeleccionados = GenerosNoSeleccionados.Select(g => new SelectorMultipleModel(g.Id.ToString(), g.Nombre)).ToList();
+
+        if (!string.IsNullOrWhiteSpace(Pelicula.Poster))
         {
             imagenURL = Pelicula.Poster;
             Pelicula.Poster = null;

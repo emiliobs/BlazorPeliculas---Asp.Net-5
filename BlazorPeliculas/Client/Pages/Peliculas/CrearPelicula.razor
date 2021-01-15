@@ -2,12 +2,28 @@
 @inject NavigationManager navigationManager
 
 <h3>Crear Película</h3>
-<hr />  
-<FormularioPeliculas Pelicula="Pelicula" OnValidSubmit="Crear"></FormularioPeliculas>
+<hr />
+<FormularioPeliculas Pelicula="Pelicula" OnValidSubmit="Crear" GenerosNoSeleccionados="GenerosNoSeleccionados" 
+                     GenerosSeleccionados="GenerosSeleccionados"></FormularioPeliculas>
 
 @code {
 
     private Pelicula Pelicula = new Pelicula();
+    private List<Genero> GenerosNoSeleccionados = new List<Genero>();
+    private List<Genero> GenerosSeleccionados = new List<Genero>();
+
+    protected override void OnInitialized()
+    {
+        GenerosNoSeleccionados = new List<Genero>
+{
+           new Genero{ Id = 1, Nombre = "Comedia" },
+           new Genero{ Id = 2, Nombre = "Drama" },
+           new Genero{ Id = 3, Nombre = "Acción" },
+           new Genero{ Id = 4, Nombre = "Sci-fi" },
+        };
+
+        base.OnInitialized();
+    }
 
     void Crear()
     {
