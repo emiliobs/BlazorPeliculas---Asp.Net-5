@@ -46,6 +46,21 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label>Actores:</label>
+        <div>
+            <SelectorMultipleTypeahead Context="persona" SearchMethod="BuscarActores" ElementosSeleccionados="ActoresSeleccionados">
+                <MyListTemplate>
+                    @persona.Nombre
+                </MyListTemplate>
+                <MyResultTemplate>
+                    <img  style="width:50px;" src="@persona.Foto"/>
+                    @persona.Nombre
+                </MyResultTemplate>
+            </SelectorMultipleTypeahead>
+        </div>
+    </div>
+
     <button class="btn btn-success mb-2" type="submit">Guardar Cambios</button>
 
 </EditForm>
@@ -59,6 +74,8 @@
     [Parameter] public List<Genero> GenerosSeleccionados { get; set; }
 
     [Parameter] public List<Genero> GenerosNoSeleccionados { get; set; }
+
+    [Parameter] public List<Persona> ActoresSeleccionados { get; set; } = new List<Persona>();
 
 
     public List<SelectorMultipleModel> Seleccionados { get; set; } = new List<SelectorMultipleModel>();
@@ -85,4 +102,14 @@
         Pelicula.Poster = imagenBAse4;
         imagenURL = null;
     }
+
+    private async Task<IEnumerable<Persona>> BuscarActores(string searchText)
+    {
+        return new  List<Persona>
+        {
+            new Persona(){ Id = 1, Nombre = "Emilio Barrera", Foto = "https://scontent-lht6-1.xx.fbcdn.net/v/t1.0-9/139360113_10157680895863239_3550246272254554940_o.jpg?_nc_cat=100&ccb=2&_nc_sid=0debeb&_nc_ohc=VAzCQMTxA0AAX-6VX2A&_nc_ht=scontent-lht6-1.xx&oh=59c496434b78be3309015aabd538d9c3&oe=6027C7E4" },
+            new Persona{ Id = 2, Nombre = "Tom Holland", Foto = "https://m.media-amazon.com/images/M/MV5BMTQ2MjMwNDA3Nl5BMl5BanBnXkFtZTcwMTA2NDY3NQ@@._V1_UY317_CR2,0,214,317_AL_.jpg" },
+        };
+    }
+
 }

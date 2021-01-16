@@ -16,6 +16,10 @@
     <ProjectReference Include="..\Shared\BlazorPeliculas.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 	
 
 </Project>
