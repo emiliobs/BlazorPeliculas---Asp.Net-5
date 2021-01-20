@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorPeliculas.Shared.Entidades
@@ -16,6 +17,8 @@ namespace BlazorPeliculas.Shared.Entidades
 
         [Required]
         public DateTime? FechaDeNacimiento { get; set; }
+
+        public List<PeliculaActor> PeliculaActors { get; set; }
 
         public override bool Equals(object obj)
         {

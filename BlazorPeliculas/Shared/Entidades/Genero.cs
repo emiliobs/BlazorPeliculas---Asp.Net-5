@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorPeliculas.Shared.Entidades
 {
@@ -8,5 +9,11 @@ namespace BlazorPeliculas.Shared.Entidades
 
         [Required(ErrorMessage = "El Campo {0} es Requerido!")]
         public string Nombre { get; set; }
+
+        //relaciones:
+
+        public List<GeneroPelicula> GeneroPeliculas  { get; set; }
+
+
     }
 }

@@ -22,7 +22,10 @@ namespace BlazorPeliculas.Shared.Entidades
 
         public string Poster { get; set; }
 
+        //relacion ()propiedades de navegación
         public List<GeneroPelicula> GeneroPeliculas { get; set; } = new List<GeneroPelicula>();
+
+        public List<PeliculaActor> PeliculaActors { get; set; }
 
         public string TituloCortado
         {
@@ -46,5 +49,7 @@ namespace BlazorPeliculas.Shared.Entidades
             }
 
         }
+
+        
     }
 }
