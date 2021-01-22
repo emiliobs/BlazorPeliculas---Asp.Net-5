@@ -1,4 +1,6 @@
 ﻿@page "/generos/crear"
+@inject NavigationManager navigationManager
+@inject IRepositorioPelicula repositorio 
 
 <h3>Crear Generos</h3>
 
@@ -9,10 +11,18 @@
 
     private Genero Genero = new Genero();
 
-    private void Crear()
+    private async void Crear()
     {
-        Console.WriteLine("Ejecutando Método Crear.");
-        Console.WriteLine($"Nombre del Género: {Genero.Nombre}");
+        var httpResponse = await repositorio.Post("api/Generos", Genero);
+        if (httpResponse.Error)
+        {
+            var body = await httpResponse.HttpResponseMessage.Content.ReadAsStringAsync();
+            Console.WriteLine(body);
+        }
+        else
+        {
+            navigationManager.NavigateTo("/generos");
+        }
     }
 
 }
