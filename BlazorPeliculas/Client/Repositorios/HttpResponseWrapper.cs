@@ -20,5 +20,11 @@ namespace BlazorPeliculas.Client.Repositorios
         public T Response { get; set; }
 
         public HttpResponseMessage HttpResponseMessage { get; set; }
+       
+        public async Task<string> GetBody()
+        {
+            return await HttpResponseMessage.Content.ReadAsStringAsync();
+        }
+    
     }
 }
