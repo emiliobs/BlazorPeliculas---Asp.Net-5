@@ -28,8 +28,8 @@ namespace BlazorPeliculas.Server
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivoLocal>();
-            //services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivosAzStorage>();
+            //services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivoLocal>();
+            services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivosAzStorage>();
 
             //aqui confirgur el servicio AddHttpContextAccessor:
             services.AddHttpContextAccessor();

@@ -1,5 +1,7 @@
 ﻿@page "/peliculas/crear"
 @inject NavigationManager navigationManager
+@inject IRepositorioPelicula IRepositorioPelicula
+@inject IMostrarMensajes IMostrarMensajes
 
 <h3>Crear Película</h3>
 <hr />
@@ -25,10 +27,18 @@
         base.OnInitialized();
     }
 
-    void Crear()
+    async Task Crear()
     {
-        Console.WriteLine(navigationManager.Uri);
-        navigationManager.NavigateTo("pelicula");
+        var httpResponse = await IRepositorioPelicula.Post<Pelicula, int>("api/Peliculas", Pelicula);
+        if (httpResponse.Error)
+        {
+            await IMostrarMensajes.MostrarMensajesError(await httpResponse.GetBody());
+        }
+        else
+        {
+            var peliculaId = httpResponse.Response;
+            navigationManager.NavigateTo($"/pelicula/{peliculaId}/{Pelicula.Titulo.Replace(" ", "-")}");
+        }
     }
 
 }

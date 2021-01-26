@@ -17,6 +17,11 @@ namespace BlazorPeliculas.Client.Repositorios
             this._httpClient = httpClient;
         }
 
+        private JsonSerializerOptions OpcionesPorDefectoJSON = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+
         public List<Pelicula> ObtenerPelicula()
         {
             return new List<Pelicula>
@@ -38,7 +43,26 @@ namespace BlazorPeliculas.Client.Repositorios
             return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode, null, responseHttp);
         }
 
+        public async Task<HttpResponseWrapper<TResponse>> Post<T, TResponse>(string url, T enviar)
+        {
+            var enviarJSON = JsonSerializer.Serialize(enviar);
+            var enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
+            var responseHttp = await _httpClient.PostAsync(url, enviarContent);
+            if (responseHttp.IsSuccessStatusCode)
+            {
+                var response = await DeserializarRespuesta<TResponse>(responseHttp, OpcionesPorDefectoJSON);
+                return new HttpResponseWrapper<TResponse>(false, response, responseHttp);
+            }
+            else
+            {
+                return new HttpResponseWrapper<TResponse>(true, default, responseHttp);
+            }
+        }
 
-
+        private async Task<T> DeserializarRespuesta<T>(HttpResponseMessage httpResponseMessage, JsonSerializerOptions jsonSerializerOptions)
+        {
+            var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(responseString, jsonSerializerOptions);
+        }
     }
 }
