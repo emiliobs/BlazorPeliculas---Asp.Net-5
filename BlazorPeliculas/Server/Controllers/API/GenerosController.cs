@@ -1,10 +1,6 @@
 ﻿using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Shared.Entidades;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Controllers.API

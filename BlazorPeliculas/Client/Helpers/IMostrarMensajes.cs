@@ -4,6 +4,6 @@ namespace BlazorPeliculas.Client.Helpers
 {
     public interface IMostrarMensajes
     {
-        Task MostrarMensajesError(string mensaje); 
+        Task MostrarMensajesError(string mensaje);
     }
 }

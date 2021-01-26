@@ -1,4 +1,5 @@
 using BlazorPeliculas.Server.Datos;
+using BlazorPeliculas.Server.Helpars;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,16 @@ namespace BlazorPeliculas.Server
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<ApplicationDbContex>(options => 
+            services.AddDbContext<ApplicationDbContex>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivoLocal>();
+            //services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivosAzStorage>();
+
+            //aqui confirgur el servicio AddHttpContextAccessor:
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

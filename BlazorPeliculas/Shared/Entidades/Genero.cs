@@ -12,7 +12,7 @@ namespace BlazorPeliculas.Shared.Entidades
 
         //relaciones:
 
-        public List<GeneroPelicula> GeneroPeliculas  { get; set; }
+        public List<GeneroPelicula> GeneroPeliculas { get; set; }
 
 
     }

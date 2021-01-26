@@ -50,6 +50,6 @@ namespace BlazorPeliculas.Shared.Entidades
 
         }
 
-        
+
     }
 }

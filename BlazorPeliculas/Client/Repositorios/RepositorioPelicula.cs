@@ -35,7 +35,7 @@ namespace BlazorPeliculas.Client.Repositorios
             var enviarJSON = JsonSerializer.Serialize(enviar);
             var enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
             var responseHttp = await _httpClient.PostAsync(url, enviarContent);
-            return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode,null,responseHttp);
+            return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode, null, responseHttp);
         }
 
 
