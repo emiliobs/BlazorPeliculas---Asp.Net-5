@@ -1,11 +1,10 @@
 ﻿using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
 using BlazorPeliculas.Shared.Entidades;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Controllers
@@ -36,5 +35,7 @@ namespace BlazorPeliculas.Server.Controllers
             await _contex.SaveChangesAsync();
             return pelicula.Id;
         }
+
+       
     }
 }

@@ -6,6 +6,8 @@ namespace BlazorPeliculas.Client.Repositorios
 {
     public interface IRepositorioPelicula
     {
+        Task<HttpResponseWrapper<T>> Get<T>(string url);
+
         List<Pelicula> ObtenerPelicula();
 
         Task<HttpResponseWrapper<object>> Post<T>(string url, T enviar);

@@ -1,6 +1,8 @@
 ﻿using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Shared.Entidades;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Controllers.API
@@ -23,6 +25,12 @@ namespace BlazorPeliculas.Server.Controllers.API
             await _contex.SaveChangesAsync();
 
             return Ok(genero);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Genero>>> Get()
+        {
+            return await _contex.Generos.ToListAsync();
         }
     }
 }

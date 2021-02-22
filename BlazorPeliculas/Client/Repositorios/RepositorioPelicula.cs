@@ -59,6 +59,22 @@ namespace BlazorPeliculas.Client.Repositorios
             }
         }
 
+        public async Task<HttpResponseWrapper<T>> Get<T>(string url)
+        {
+            var responseHTTP = await _httpClient.GetAsync(url);
+
+            if (responseHTTP.IsSuccessStatusCode)
+            {
+                var response = await DeserializarRespuesta<T>(responseHTTP, OpcionesPorDefectoJSON);
+
+                return new HttpResponseWrapper<T>(false, response, responseHTTP);
+            }
+            else
+            {
+                return new HttpResponseWrapper<T>(true, default, responseHTTP);
+            }
+        }
+
         private async Task<T> DeserializarRespuesta<T>(HttpResponseMessage httpResponseMessage, JsonSerializerOptions jsonSerializerOptions)
         {
             var responseString = await httpResponseMessage.Content.ReadAsStringAsync();

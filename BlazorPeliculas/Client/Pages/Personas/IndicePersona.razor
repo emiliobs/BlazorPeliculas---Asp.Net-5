@@ -1,11 +1,49 @@
 ﻿@page "/personas"
 
+@inject IRepositorioPelicula repositorio
+
 <h3>Indice Persona</h3>
-<hr />  
+<hr />
 <div class="form-group">
     <a href="personas/crear" class="btn btn-info">Crear Persona</a>
 </div>
 
+
+<ListadoGenerico Listado="Personas">
+    <HayRegistrosCompleto>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombres</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Personas)
+                {
+                    <tr>
+                        <td>
+                            <a class="btn btn-success">Editar</a>
+                            <a class="btn btn-danger">Borrar</a>
+                        </td>
+                        <td>@item.Nombre</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </HayRegistrosCompleto>
+</ListadoGenerico>
+
 @code {
 
+    public List<Persona> Personas { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var responseHTTP = await repositorio.Get<List<Persona>>("api/personas");
+
+        Personas = responseHTTP.Response;
+
+    }
 }
+

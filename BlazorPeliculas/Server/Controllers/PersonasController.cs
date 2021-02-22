@@ -2,7 +2,9 @@
 using BlazorPeliculas.Server.Helpars;
 using BlazorPeliculas.Shared.Entidades;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Controllers
@@ -21,6 +23,12 @@ namespace BlazorPeliculas.Server.Controllers
             _almacenadorArchivos = almacenadorArchivos;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<Persona>>> Get()
+        {
+            return await _contex.Personas.ToListAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post(Persona persona)
         {
@@ -35,5 +43,6 @@ namespace BlazorPeliculas.Server.Controllers
 
             return Ok(persona);
         }
+
     }
 }
