@@ -3,12 +3,21 @@
 
 
 <div>
-    <h3>Películas</h3>
+    <h3>En Cartelera</h3>
     <hr />
 
-    <ListadoPeliculas Peliculas="Peliculas"></ListadoPeliculas>
+    <ListadoPeliculas Peliculas="EnCartelera"></ListadoPeliculas>
 
 </div>
+
+<div>
+    <h3>Próximos Estrenos</h3>
+    <hr />
+
+    <ListadoPeliculas Peliculas="FuturosEstrenos"></ListadoPeliculas>
+
+</div>
+
 
 
 
@@ -16,14 +25,15 @@
 @code
 {
 
-    public List<Pelicula> Peliculas { get; set; }
+    public List<Pelicula> FuturosEstrenos { get; set; }
+    public List<Pelicula> EnCartelera { get; set; }
 
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-
-
-        Peliculas = repositorio.ObtenerPelicula();
+        var httpResponse = await repositorio.Get<HomePageDTO>("api/peliculas");
+        FuturosEstrenos = httpResponse.Response.ProximosEstrenos;
+        EnCartelera = httpResponse.Response.PeliculasEnCartelera;
     }
 
 

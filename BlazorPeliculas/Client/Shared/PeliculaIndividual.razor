@@ -25,7 +25,7 @@
 
     protected override void OnInitialized()
     {
-        urlPelicula = $"pelicula/";
+        urlPelicula = $"pelicula/1/{Pelicula?.Titulo?.Replace(" ", "_")}";
     }
 
 }

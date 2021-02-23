@@ -1,10 +1,12 @@
 ﻿using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
+using BlazorPeliculas.Shared.DTOs;
 using BlazorPeliculas.Shared.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Controllers
@@ -20,6 +22,27 @@ namespace BlazorPeliculas.Server.Controllers
         {
             this._contex = contex;
             this._almacenadorArchivos = almacenadorArchivos;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<HomePageDTO>> Get()
+        {
+            var limite = 5;
+
+            var peliculasEnCartelera = await _contex.Peliculas.Where(x => x.EnCartelera).Take(limite)
+                                            .OrderByDescending(x => x.Lanzamiento).ToListAsync();
+
+            var fechaActual = DateTime.Today;
+
+            var proximosEstrenos = await _contex.Peliculas.Where(x => x.Lanzamiento > fechaActual).OrderBy(x => x.Lanzamiento)
+                                         .Take(limite).ToListAsync();
+
+            return new HomePageDTO 
+            {
+               PeliculasEnCartelera = peliculasEnCartelera,
+               ProximosEstrenos = proximosEstrenos,
+            };
+
         }
 
         [HttpPost]
