@@ -45,6 +45,43 @@ namespace BlazorPeliculas.Server.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PeliculaVisualizarDTO>> Get(int id)
+        {
+            var pelicula = await _contex.Peliculas.Where(x => x.Id == id)
+                                                  .Include(x => x.GeneroPeliculas)
+                                                  .ThenInclude(x => x.Genero)
+                                                  .Include(x => x.PeliculaActors)
+                                                  .ThenInclude(x => x.Persona).FirstOrDefaultAsync();
+
+            if (pelicula == null)
+            {
+                return NotFound();
+            }
+
+            //todo: sistema de votación
+            var promedioVotos = 4;
+            var votoUsuario = 5;
+
+            pelicula.PeliculaActors = pelicula.PeliculaActors.OrderBy(x => x.Orden).ToList();
+
+            var model = new PeliculaVisualizarDTO();
+            model.Pelicula = pelicula;
+            model.Generos = pelicula.GeneroPeliculas.Select(x => x.Genero).ToList();
+            model.Actores = pelicula.PeliculaActors.Select(x => new Persona
+            {
+                 Nombre = x.Persona.Nombre,
+                 Foto = x.Persona.Foto,
+                 Personaje = x.Personaje,
+                 Id = x.PersonaId,
+            }).ToList();
+
+            model.PromedioVotos = promedioVotos;
+            model.VotoUsuario = votoUsuario;
+
+            return model;
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> Post(Pelicula pelicula)
         {
@@ -54,6 +91,14 @@ namespace BlazorPeliculas.Server.Controllers
                 pelicula.Poster = await _almacenadorArchivos.GuardarArchivo(fotoPoster, "jpg", "peliculas");
             }
 
+            if (pelicula.PeliculaActors != null)
+            {
+                for (int i = 0; i < pelicula.PeliculaActors.Count; i++)
+                {
+                    pelicula.PeliculaActors[i].Orden = i + 1;
+                }
+
+            }
             _contex.Add(pelicula);
             await _contex.SaveChangesAsync();
             return pelicula.Id;

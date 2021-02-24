@@ -1,5 +1,8 @@
 ﻿@page "/pelicula/{PeliculaId:int}"
 @page "/pelicula/{PeliculaId:int}/{NombrePelicula}"
+@inject  IRepositorioPelicula _repositorio
+@inject NavigationManager _navigationManager
+@inject IMostrarMensajes _mostarMensajes
 
 <h3>Visualizar Película</h3>
 
@@ -8,8 +11,27 @@
     [Parameter] public int PeliculaId { get; set; }
     [Parameter] public string NombrePelicula { get; set; }
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
+        var responseHTTP = await _repositorio.Get<PeliculaVisualizarDTO>($"api/peliculas/{PeliculaId}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _navigationManager.NavigateTo("");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetBody();
+                await _mostarMensajes.MostrarMensajesError(mensajeError);
+            }
+        }
+        else
+        {
+
+        }
+
         Console.WriteLine($"El Id de la Película es : {PeliculaId}/{NombrePelicula}");
     }
 }
