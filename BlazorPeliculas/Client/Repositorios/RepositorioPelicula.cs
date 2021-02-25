@@ -43,6 +43,15 @@ namespace BlazorPeliculas.Client.Repositorios
             return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode, null, responseHttp);
         }
 
+        public async Task<HttpResponseWrapper<object>> Put<T>(string url, T enviar)
+        {
+            var enviarJSON = JsonSerializer.Serialize(enviar);
+            var enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
+            var responseHttp = await _httpClient.PutAsync(url, enviarContent);
+            return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode, null, responseHttp);
+        }
+
+
         public async Task<HttpResponseWrapper<TResponse>> Post<T, TResponse>(string url, T enviar)
         {
             var enviarJSON = JsonSerializer.Serialize(enviar);

@@ -18,6 +18,18 @@ namespace BlazorPeliculas.Server.Controllers.API
             this._contex = contex;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<Genero>>> Get()
+        {
+            return await _contex.Generos.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Genero>> Get(int id)
+        {
+            return await _contex.Generos.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post(Genero genero)
         {
@@ -27,10 +39,14 @@ namespace BlazorPeliculas.Server.Controllers.API
             return Ok(genero);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Genero>>> Get()
+        [HttpPut]
+        public async Task<ActionResult> Put(Genero genero)
         {
-            return await _contex.Generos.ToListAsync();
+            _contex.Attach(genero).State = EntityState.Modified;
+            await _contex.SaveChangesAsync();
+            return NoContent();
         }
+
+       
     }
 }
