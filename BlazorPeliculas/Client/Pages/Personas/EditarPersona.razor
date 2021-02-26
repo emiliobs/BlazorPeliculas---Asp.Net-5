@@ -1,30 +1,62 @@
 ﻿@page "/personas/editar/{PersonaId:int}"
+@inject IMostrarMensajes _mostrarMensasje
+@inject NavigationManager _navigationManager
+@inject IRepositorioPelicula _repositorio
+
 
 <h3>Editar Persona</h3>
 <hr />
-<FormularioPersonas Persona="Persona" OnValidSubmit="Editar"></FormularioPersonas>
+@if (Persona == null)
+{
+    <text>Cargando.....</text>
+}
+else
+{
+
+    <FormularioPersonas Persona="Persona" OnValidSubmit="Editar"></FormularioPersonas>
+}
 
 @code {
 
     [Parameter] public int PersonaId { get; set; }
 
-    Persona Persona = new Persona();
+    Persona Persona;
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        Persona = new Persona
+
+        var httpResponse = await _repositorio.Get<Persona>($"api/personas/{PersonaId}");
+
+        if (httpResponse.Error)
         {
-            Id = PersonaId,
-            Nombre = "Emilio Barrera",
-            FechaDeNacimiento = DateTime.Today,
-        };
+            if (httpResponse.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _navigationManager.NavigateTo("personas");
+            }
+            else
+            {
+                await _mostrarMensasje.MostrarMensajesError(await httpResponse.GetBody());
+            }
+        }
+        else
+        {
+            Persona = httpResponse.Response;
+            Console.WriteLine(Persona.Foto);
+        }
 
-        base.OnInitialized();
+
     }
 
-    private void Editar()
+    private async Task Editar()
     {
-        Console.WriteLine("Editando a la Persona.");
+        var httpResponse = await _repositorio.Put("api/personas", Persona);
+        if (httpResponse.Error)
+        {
+            await _mostrarMensasje.MostrarMensajesError(await httpResponse.GetBody());
+        }
+        else
+        {
+            _navigationManager.NavigateTo("personas");
+        }
     }
-
 }

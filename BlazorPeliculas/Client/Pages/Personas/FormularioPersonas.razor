@@ -44,13 +44,15 @@
 
     protected override void OnInitialized()
     {
-        if (!string.IsNullOrEmpty(Persona.Foto))
+        if (!string.IsNullOrWhiteSpace(Persona.Foto))
         {
             imagenURL = Persona.Foto;
+            Console.WriteLine(imagenURL);
             Persona.Foto = null;
         }
 
-        base.OnInitialized();
+      
+
     }
 
     private void ImagenSeleccinada(string imagenBAse4)

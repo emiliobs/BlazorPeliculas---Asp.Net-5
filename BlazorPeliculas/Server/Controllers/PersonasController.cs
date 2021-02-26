@@ -1,4 +1,5 @@
-﻿using BlazorPeliculas.Server.Datos;
+﻿using AutoMapper;
+using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
 using BlazorPeliculas.Shared.Entidades;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +17,33 @@ namespace BlazorPeliculas.Server.Controllers
     {
         private readonly ApplicationDbContex _contex;
         private readonly IAlmacenadorArchivosAzStorage _almacenadorArchivos;
-        private readonly string contendor = "personas";
+        private readonly IMapper _mapper;
+        //private readonly string contendor = "personas";
 
-        public PersonasController(ApplicationDbContex contex, IAlmacenadorArchivosAzStorage almacenadorArchivos)
+        public PersonasController(ApplicationDbContex contex, IAlmacenadorArchivosAzStorage almacenadorArchivos, IMapper mapper)
         {
             _contex = contex;
             _almacenadorArchivos = almacenadorArchivos;
+            this._mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Persona>>> Get()
         {
             return await _contex.Personas.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Persona>> Get(int id)
+        {
+            var persona = await _contex.Personas.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (persona == null)
+            {
+                return NotFound();
+            }
+
+            return persona;
         }
 
         [HttpGet("buscar/{textoBusqueda}")]
@@ -48,7 +64,7 @@ namespace BlazorPeliculas.Server.Controllers
             if (!string.IsNullOrEmpty(persona.Foto))
             {
                 var fotoPersonas = Convert.FromBase64String(persona.Foto);
-                persona.Foto = await _almacenadorArchivos.GuardarArchivo(fotoPersonas, "jpg", contendor);
+                persona.Foto = await _almacenadorArchivos.GuardarArchivo(fotoPersonas, "jpg", "personas");
             }
 
             _contex.Add(persona);
@@ -57,5 +73,30 @@ namespace BlazorPeliculas.Server.Controllers
             return Ok(persona);
         }
 
+        [HttpPut]
+        public async Task<ActionResult> Put(Persona persona)
+        {
+            var personaDB = await _contex.Personas.FirstOrDefaultAsync(p => p.Id == persona.Id);
+
+            if (personaDB == null)
+            {
+                return NotFound();
+            }
+
+            //aqui mappeo las dos clases:
+            personaDB = _mapper.Map(persona, personaDB);
+
+            if (!string.IsNullOrWhiteSpace(persona.Foto))
+            {
+                var fotoImagen = Convert.FromBase64String(persona.Foto);
+                personaDB.Foto = await _almacenadorArchivos.EditarArchivo(fotoImagen,
+                    "jpg", "personas", personaDB.Foto);
+            }
+
+            await _contex.SaveChangesAsync();
+
+            return NoContent();
+
+        }
     }
 }

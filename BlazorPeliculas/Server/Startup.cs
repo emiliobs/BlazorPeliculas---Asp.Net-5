@@ -28,6 +28,9 @@ namespace BlazorPeliculas.Server
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //Aqui utilizo Automapper:
+            services.AddAutoMapper(typeof(Startup));
+
             //services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivoLocal>();
             services.AddScoped<IAlmacenadorArchivosAzStorage, AlmacenadorArchivosAzStorage>();
 

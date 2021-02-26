@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Helpars
 {
-    public class AlmacenadorArchivoLocal : IAlmacenadorArchivosAzStorage
+    public class AlmacenadorArchivoLocal
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
