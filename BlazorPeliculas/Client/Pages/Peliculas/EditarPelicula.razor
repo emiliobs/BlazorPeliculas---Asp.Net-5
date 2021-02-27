@@ -59,9 +59,17 @@ else
     }
 
 
-    private void Editar()
+    private async Task Editar()
     {
-        Console.WriteLine("Editando Películas......");
+        var httpResponse = await _repositorio.Put("api/Peliculas", Pelicula);
+        if (httpResponse.Error)
+        {
+            await _mostrarMensaje.MostrarMensajesError(await httpResponse.GetBody());
+        }
+        else
+        {
+            _navigationManager.NavigateTo($"pelicula/{PeliculaId}");
+        }
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using BlazorPeliculas.Server.Datos;
+﻿using AutoMapper;
+using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
 using BlazorPeliculas.Shared.DTOs;
 using BlazorPeliculas.Shared.Entidades;
@@ -17,11 +18,14 @@ namespace BlazorPeliculas.Server.Controllers
     {
         private readonly ApplicationDbContex _contex;
         private readonly IAlmacenadorArchivosAzStorage _almacenadorArchivos;
+        private readonly IMapper _mapper;
 
-        public PeliculasController(ApplicationDbContex contex, IAlmacenadorArchivosAzStorage almacenadorArchivos)
+        public PeliculasController(ApplicationDbContex contex, IAlmacenadorArchivosAzStorage almacenadorArchivos,
+                                   IMapper mapper)
         {
             this._contex = contex;
             this._almacenadorArchivos = almacenadorArchivos;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -127,6 +131,42 @@ namespace BlazorPeliculas.Server.Controllers
             return pelicula.Id;
         }
 
+        [HttpPut]
+        public async Task<ActionResult> Put(Pelicula pelicula)
+        {
+            var peliculaDB = await _contex.Peliculas.FirstOrDefaultAsync(p => p.Id == pelicula.Id);
+            if (peliculaDB == null)
+            {
+                return NotFound();
+            }
+
+            peliculaDB = _mapper.Map(pelicula, peliculaDB);
+
+            if (!string.IsNullOrWhiteSpace(pelicula.Poster))
+            {
+                var posterImage = Convert.FromBase64String(pelicula.Poster);
+                peliculaDB.Poster = await _almacenadorArchivos.EditarArchivo(posterImage, "jpg", "peliculas", peliculaDB.Poster);
+            }
+
+            await _contex.Database.ExecuteSqlInterpolatedAsync($"delete from  GeneroPeliculas where PeliculaId = {pelicula.Id}; delete from PeliculaActors where PeliculaId = {pelicula.Id}");
+
+            if (pelicula.PeliculaActors != null)
+            {
+                for (int i = 0; i < pelicula.PeliculaActors.Count; i++)
+                {
+                    pelicula.PeliculaActors[i].Orden = i + 1;
+                }
+
+            }
+
+            peliculaDB.PeliculaActors = pelicula.PeliculaActors;
+            peliculaDB.GeneroPeliculas = pelicula.GeneroPeliculas;
+
+            await _contex.SaveChangesAsync();
+
+            return NoContent();
+        
+        }
        
     }
 }

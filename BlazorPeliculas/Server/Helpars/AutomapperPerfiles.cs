@@ -11,7 +11,9 @@ namespace BlazorPeliculas.Server.Helpars
     {
         public AutomapperPerfiles()
         {
-            CreateMap<Persona, Persona>().ForMember(p => p.Foto, option => option.Ignore()); 
+            CreateMap<Persona, Persona>().ForMember(p => p.Foto, option => option.Ignore());
+
+            CreateMap<Pelicula, Pelicula>().ForMember(p => p.Poster, option => option.Ignore());
         }
     }
 }
