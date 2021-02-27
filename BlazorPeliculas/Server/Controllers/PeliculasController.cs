@@ -82,6 +82,29 @@ namespace BlazorPeliculas.Server.Controllers
             return model;
         }
 
+        [HttpGet("actualizar/{id}")]
+        public async Task<ActionResult<PeliculaActualizacionDTO>> PutGet(int id)
+        {
+            var peliculaActionResult = await Get(id);
+            if (peliculaActionResult.Result is NotFoundResult)
+            {
+                return NotFound();
+            }
+
+            var peliculaVisualizarDTO = peliculaActionResult.Value;
+            var generosSeleccionadosIds = peliculaVisualizarDTO.Generos.Select(p => p.Id).ToList();
+            var generosNoSeleccionados = await _contex.Generos.Where(g => !generosSeleccionadosIds.Contains(g.Id)).ToListAsync();
+
+            return new PeliculaActualizacionDTO
+            {
+                Pelicula = peliculaVisualizarDTO.Pelicula,
+                GenerosNoSeleccionados = generosNoSeleccionados,
+                GenerosSeleccionados = peliculaVisualizarDTO.Generos,
+                Actores = peliculaVisualizarDTO.Actores,
+            };
+
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> Post(Pelicula pelicula)
         {

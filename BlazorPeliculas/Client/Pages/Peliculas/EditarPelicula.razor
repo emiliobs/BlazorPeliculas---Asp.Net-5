@@ -1,32 +1,61 @@
 ﻿@page "/peliculas/editar/{PeliculaId:int}"
+@inject IRepositorioPelicula _repositorio
+@inject NavigationManager _navigationManager
+@inject IMostrarMensajes _mostrarMensaje
 
 <h3>Editar Película</h3>
 <hr />
-<FormularioPeliculas Pelicula="Pelicula" OnValidSubmit="Editar" GenerosNoSeleccionados="GenerosNoSeleccionados"
-                     GenerosSeleccionados="GenerosSeleccionados"></FormularioPeliculas>
+
+@if (Pelicula == null)
+{
+    <text>Cargando.....</text>
+}
+else
+{
+    <FormularioPeliculas
+                  Pelicula="Pelicula" 
+                  OnValidSubmit="Editar" 
+                 GenerosNoSeleccionados="GenerosNoSeleccionados"
+                  ActoresSeleccionados="ActotesSeleccionados" 
+                 GenerosSeleccionados="GenerosSeleccionados">
+
+    </FormularioPeliculas>
+}
+
 
 @code {
 
     [Parameter] public int PeliculaId { get; set; }
-    Pelicula Pelicula = new Pelicula();
+    Pelicula Pelicula;
     private List<Genero> GenerosNoSeleccionados = new List<Genero>();
     private List<Genero> GenerosSeleccionados = new List<Genero>();
+    private List<Persona> ActotesSeleccionados { get; set; }
 
-    protected override void OnInitialized()
+
+    protected async override Task OnInitializedAsync()
     {
-        Pelicula = new Pelicula { Id = PeliculaId, Titulo = "I am here for you!!!" };
+        var httpResponse = await _repositorio.Get<PeliculaActualizacionDTO>($"api/peliculas/actualizar/{PeliculaId}");
 
-        GenerosNoSeleccionados = new List<Genero>
+        if (httpResponse.Error)
         {
-           new Genero{ Id = 1, Nombre = "Comedia" },
-           new Genero{ Id = 2, Nombre = "Drama" },
-           new Genero{ Id = 4, Nombre = "Sci-fi" },
-        };
-        GenerosSeleccionados = new List<Genero>
+            if (httpResponse.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _navigationManager.NavigateTo("peliculas");
+            }
+            else
+            {
+                await _mostrarMensaje.MostrarMensajesError(await httpResponse.GetBody());
+            }
+        }
+        else
         {
-           new Genero{ Id = 3, Nombre = "Acción" },
+            var model = httpResponse.Response;
+            ActotesSeleccionados = model.Actores;
+            GenerosNoSeleccionados = model.GenerosNoSeleccionados;
+            GenerosSeleccionados = model.GenerosSeleccionados;
+            Pelicula = model.Pelicula;
 
-        };
+        }
     }
 
 
