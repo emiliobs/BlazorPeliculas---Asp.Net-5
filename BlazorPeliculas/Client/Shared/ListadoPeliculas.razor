@@ -1,4 +1,6 @@
 ﻿@inject IJSRuntime js
+@inject IRepositorioPelicula _repositorio
+@inject IMostrarMensajes _mostrarMensajes
 
     <div style="display:flex; flex-wrap:wrap; align-items:center;">
 
@@ -9,10 +11,6 @@
         </ListadoGenerico>
 
     </div>
-
-
-
-
 
 
 @code{
@@ -32,8 +30,16 @@
 
         if (confirmado)
         {
-            Peliculas.Remove(pelicula);
-            Console.WriteLine($"Se ha Eliminado una Película {pelicula.Titulo}");
+            var responseHTTP = await _repositorio.Delete($"api/peliculas/{pelicula.Id}");
+
+            if (responseHTTP.Error)
+            {
+                await _mostrarMensajes.MostrarMensajesError(await responseHTTP.GetBody());
+            }
+            else
+            {
+                Peliculas.Remove(pelicula);
+            }
 
         }
     }
