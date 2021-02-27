@@ -47,6 +47,21 @@ namespace BlazorPeliculas.Server.Controllers.API
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existe = await _contex.Generos.AnyAsync(g => g.Id == id);
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            _contex.Remove(new Genero { Id = id });
+
+            await _contex.SaveChangesAsync();
+
+            return NoContent();
+        }
        
     }
 }
