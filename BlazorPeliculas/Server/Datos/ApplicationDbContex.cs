@@ -33,18 +33,18 @@ namespace BlazorPeliculas.Server.Datos
 
             //SeedData:
 
-            var personas = new List<Persona>();
-            for (int i = 11; i < 1000; i++)
-            {
-                personas.Add(new Persona 
-                {
-                      Id = i, 
-                      Nombre = $"Persona {i}",
-                      FechaDeNacimiento = DateTime.Today,
-                });
-            }
+            //var personas = new List<Persona>();
+            //for (int i = 11; i < 1000; i++)
+            //{
+            //    personas.Add(new Persona 
+            //    {
+            //          Id = i, 
+            //          Nombre = $"Persona {i}",
+            //          FechaDeNacimiento = DateTime.Today,
+            //    });
+            //}
 
-            modelBuilder.Entity<Persona>().HasData(personas);
+            //modelBuilder.Entity<Persona>().HasData(personas);
 
             base.OnModelCreating(modelBuilder);
         }
