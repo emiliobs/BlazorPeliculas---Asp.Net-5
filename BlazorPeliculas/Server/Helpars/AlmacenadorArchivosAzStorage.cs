@@ -8,7 +8,7 @@ namespace BlazorPeliculas.Server.Helpars
 {
     public class AlmacenadorArchivosAzStorage : IAlmacenadorArchivosAzStorage
     {
-        private string _connectionString;
+        private readonly string _connectionString;
 
         public AlmacenadorArchivosAzStorage(IConfiguration configuration)
         {
@@ -29,22 +29,22 @@ namespace BlazorPeliculas.Server.Helpars
                 return;
             }
 
-            var cliente = new BlobContainerClient(_connectionString, nombreContenedor);
+            BlobContainerClient cliente = new BlobContainerClient(_connectionString, nombreContenedor);
             await cliente.CreateIfNotExistsAsync();
-            var nombreArchivo = Path.GetFileName(ruta);
-            var blob = cliente.GetBlobClient(nombreArchivo);
+            string nombreArchivo = Path.GetFileName(ruta);
+            BlobClient blob = cliente.GetBlobClient(nombreArchivo);
             await blob.DeleteIfExistsAsync();
         }
 
         public async Task<string> GuardarArchivo(byte[] contenido, string extension, string nombreContenedor)
         {
-            var cliente = new BlobContainerClient(_connectionString, nombreContenedor);
+            BlobContainerClient cliente = new BlobContainerClient(_connectionString, nombreContenedor);
             await cliente.CreateIfNotExistsAsync();
             cliente.SetAccessPolicy(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
 
-            var archivoNombre = $"{Guid.NewGuid()}.{extension}";
-            var blob = cliente.GetBlobClient(archivoNombre);
-            using (var ms = new MemoryStream(contenido))
+            string archivoNombre = $"{Guid.NewGuid()}.{extension}";
+            BlobClient blob = cliente.GetBlobClient(archivoNombre);
+            using (MemoryStream ms = new MemoryStream(contenido))
             {
                 await blob.UploadAsync(ms);
             }

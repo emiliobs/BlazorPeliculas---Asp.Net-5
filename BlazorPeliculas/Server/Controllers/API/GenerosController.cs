@@ -15,7 +15,7 @@ namespace BlazorPeliculas.Server.Controllers.API
 
         public GenerosController(ApplicationDbContex contex)
         {
-            this._contex = contex;
+            _contex = contex;
         }
 
         [HttpGet]
@@ -50,7 +50,7 @@ namespace BlazorPeliculas.Server.Controllers.API
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var existe = await _contex.Generos.AnyAsync(g => g.Id == id);
+            bool existe = await _contex.Generos.AnyAsync(g => g.Id == id);
             if (!existe)
             {
                 return NotFound();
@@ -62,6 +62,6 @@ namespace BlazorPeliculas.Server.Controllers.API
 
             return NoContent();
         }
-       
+
     }
 }

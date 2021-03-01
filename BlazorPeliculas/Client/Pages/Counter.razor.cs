@@ -13,18 +13,18 @@ namespace BlazorPeliculas.Client.Pages
         protected IJSRuntime Js { get; set; }
 
         private int currentCount = 0;
-        static int currentCountStatic = 0;
-        IJSObjectReference modulo;
+        private static int currentCountStatic = 0;
+        private IJSObjectReference modulo;
 
 
         [JSInvokable]
         public async Task IncrementCount()
         {
 
-            var arreglo = new double[] { 1, 2, 3, 4, 5 };
+            double[] arreglo = new double[] { 1, 2, 3, 4, 5 };
 
-            var max = arreglo.Maximum();
-            var min = arreglo.Minimum();
+            double max = arreglo.Maximum();
+            double min = arreglo.Minimum();
 
             modulo = await Js.InvokeAsync<IJSObjectReference>("import", "./js/Counter.js");
             await modulo.InvokeVoidAsync("mostrarAlerta", $"El max es {max} y el min es {min}");

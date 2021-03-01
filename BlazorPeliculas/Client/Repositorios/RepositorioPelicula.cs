@@ -14,10 +14,10 @@ namespace BlazorPeliculas.Client.Repositorios
 
         public RepositorioPelicula(HttpClient httpClient)
         {
-            this._httpClient = httpClient;
+            _httpClient = httpClient;
         }
 
-        private JsonSerializerOptions OpcionesPorDefectoJSON = new JsonSerializerOptions
+        private readonly JsonSerializerOptions OpcionesPorDefectoJSON = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
         };
@@ -37,29 +37,29 @@ namespace BlazorPeliculas.Client.Repositorios
 
         public async Task<HttpResponseWrapper<object>> Post<T>(string url, T enviar)
         {
-            var enviarJSON = JsonSerializer.Serialize(enviar);
-            var enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
-            var responseHttp = await _httpClient.PostAsync(url, enviarContent);
+            string enviarJSON = JsonSerializer.Serialize(enviar);
+            StringContent enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseHttp = await _httpClient.PostAsync(url, enviarContent);
             return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode, null, responseHttp);
         }
 
         public async Task<HttpResponseWrapper<object>> Put<T>(string url, T enviar)
         {
-            var enviarJSON = JsonSerializer.Serialize(enviar);
-            var enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
-            var responseHttp = await _httpClient.PutAsync(url, enviarContent);
+            string enviarJSON = JsonSerializer.Serialize(enviar);
+            StringContent enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseHttp = await _httpClient.PutAsync(url, enviarContent);
             return new HttpResponseWrapper<object>(!responseHttp.IsSuccessStatusCode, null, responseHttp);
         }
 
 
         public async Task<HttpResponseWrapper<TResponse>> Post<T, TResponse>(string url, T enviar)
         {
-            var enviarJSON = JsonSerializer.Serialize(enviar);
-            var enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
-            var responseHttp = await _httpClient.PostAsync(url, enviarContent);
+            string enviarJSON = JsonSerializer.Serialize(enviar);
+            StringContent enviarContent = new StringContent(enviarJSON, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseHttp = await _httpClient.PostAsync(url, enviarContent);
             if (responseHttp.IsSuccessStatusCode)
             {
-                var response = await DeserializarRespuesta<TResponse>(responseHttp, OpcionesPorDefectoJSON);
+                TResponse response = await DeserializarRespuesta<TResponse>(responseHttp, OpcionesPorDefectoJSON);
                 return new HttpResponseWrapper<TResponse>(false, response, responseHttp);
             }
             else
@@ -70,11 +70,11 @@ namespace BlazorPeliculas.Client.Repositorios
 
         public async Task<HttpResponseWrapper<T>> Get<T>(string url)
         {
-            var responseHTTP = await _httpClient.GetAsync(url);
+            HttpResponseMessage responseHTTP = await _httpClient.GetAsync(url);
 
             if (responseHTTP.IsSuccessStatusCode)
             {
-                var response = await DeserializarRespuesta<T>(responseHTTP, OpcionesPorDefectoJSON);
+                T response = await DeserializarRespuesta<T>(responseHTTP, OpcionesPorDefectoJSON);
 
                 return new HttpResponseWrapper<T>(false, response, responseHTTP);
             }
@@ -86,13 +86,13 @@ namespace BlazorPeliculas.Client.Repositorios
 
         private async Task<T> DeserializarRespuesta<T>(HttpResponseMessage httpResponseMessage, JsonSerializerOptions jsonSerializerOptions)
         {
-            var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(responseString, jsonSerializerOptions);
         }
-    
+
         public async Task<HttpResponseWrapper<object>> Delete(string url)
         {
-            var responseHTTP = await _httpClient.DeleteAsync(url);
+            HttpResponseMessage responseHTTP = await _httpClient.DeleteAsync(url);
 
             return new HttpResponseWrapper<object>(!responseHTTP.IsSuccessStatusCode, null, responseHTTP);
 

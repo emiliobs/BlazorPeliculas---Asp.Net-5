@@ -26,8 +26,8 @@ namespace BlazorPeliculas.Server.Helpars
 
         public Task EliminarArchivos(string ruta, string nombreContenedor)
         {
-            var fileName = Path.GetFileName(ruta);
-            var directorioArchivo = Path.Combine(_webHostEnvironment.WebRootPath, nombreContenedor, fileName);
+            string fileName = Path.GetFileName(ruta);
+            string directorioArchivo = Path.Combine(_webHostEnvironment.WebRootPath, nombreContenedor, fileName);
             if (File.Exists(directorioArchivo))
             {
                 File.Delete(directorioArchivo);
@@ -38,19 +38,19 @@ namespace BlazorPeliculas.Server.Helpars
 
         public async Task<string> GuardarArchivo(byte[] contenido, string extension, string nombreContenedor)
         {
-            var fileName = $"{Guid.NewGuid()}.{extension}";
-            var folder = Path.Combine(_webHostEnvironment.WebRootPath, nombreContenedor);
+            string fileName = $"{Guid.NewGuid()}.{extension}";
+            string folder = Path.Combine(_webHostEnvironment.WebRootPath, nombreContenedor);
 
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
 
-            var rutaGuardado = Path.Combine(folder, fileName);
+            string rutaGuardado = Path.Combine(folder, fileName);
             await File.WriteAllBytesAsync(rutaGuardado, contenido);
 
-            var urlActual = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
-            var rutaParaBD = Path.Combine(urlActual, nombreContenedor, fileName);
+            string urlActual = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}";
+            string rutaParaBD = Path.Combine(urlActual, nombreContenedor, fileName);
 
             return rutaParaBD;
 

@@ -53,7 +53,7 @@ namespace BlazorPeliculas.Client.Shared
 
         private Timer _debounceTimer;
         private string _searchText = string.Empty;
-        private bool _firstRender = true; // remove in preview 9
+        private readonly bool _firstRender = true; // remove in preview 9
 
         protected override void OnInitialized()
         {
@@ -67,9 +67,11 @@ namespace BlazorPeliculas.Client.Shared
                 throw new InvalidOperationException($"{GetType()} requires a {nameof(ResultTemplate)} parameter.");
             }
 
-            _debounceTimer = new Timer();
-            _debounceTimer.Interval = Debounce;
-            _debounceTimer.AutoReset = false;
+            _debounceTimer = new Timer
+            {
+                Interval = Debounce,
+                AutoReset = false
+            };
             _debounceTimer.Elapsed += Search;
 
             Initialize();
@@ -147,19 +149,27 @@ namespace BlazorPeliculas.Client.Shared
         protected async Task HandleKeyUpOnShowMaximum(KeyboardEventArgs args)
         {
             if (args.Key == "Enter")
+            {
                 await ShowMaximumSuggestions();
+            }
         }
 
         protected string GetSelectedSuggestionClass(TItem item)
         {
             if (Value == null)
+            {
                 return null;
+            }
+
             if (Value.Equals(item))
+            {
                 return "blazored-typeahead__result-selected";
+            }
+
             return null;
         }
 
-        protected async void Search(Object source, ElapsedEventArgs e)
+        protected async void Search(object source, ElapsedEventArgs e)
         {
             IsSearching = true;
             await InvokeAsync(StateHasChanged);

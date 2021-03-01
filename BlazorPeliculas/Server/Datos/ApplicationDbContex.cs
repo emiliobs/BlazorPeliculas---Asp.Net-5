@@ -1,5 +1,7 @@
 ﻿using BlazorPeliculas.Shared.Entidades;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
 namespace BlazorPeliculas.Server.Datos
 {
@@ -28,6 +30,21 @@ namespace BlazorPeliculas.Server.Datos
             modelBuilder.Entity<GeneroPelicula>().HasKey(gp => new { gp.GeneroId, gp.PeliculaId });
 
             modelBuilder.Entity<PeliculaActor>().HasKey(pa => new { pa.PeliculaId, pa.PersonaId });
+
+            //SeedData:
+
+            var personas = new List<Persona>();
+            for (int i = 11; i < 1000; i++)
+            {
+                personas.Add(new Persona 
+                {
+                      Id = i, 
+                      Nombre = $"Persona {i}",
+                      FechaDeNacimiento = DateTime.Today,
+                });
+            }
+
+            modelBuilder.Entity<Persona>().HasData(personas);
 
             base.OnModelCreating(modelBuilder);
         }

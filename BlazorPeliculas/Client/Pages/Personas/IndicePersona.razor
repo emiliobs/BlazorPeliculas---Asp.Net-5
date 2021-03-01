@@ -9,6 +9,8 @@
     <a href="personas/crear" class="btn btn-info">Crear Persona</a>
 </div>
 
+<Paginacion PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada" PaginasTotales="paginasTotales"></Paginacion>
+
 
 <ListadoGenerico Listado="Personas">
     <HayRegistrosCompleto>
@@ -39,17 +41,33 @@
 
     public List<Persona> Personas { get; set; }
 
+    private int paginaActual = 1;
+    private int paginasTotales;
+
+
     protected async override Task OnInitializedAsync()
     {
         await Cargar();
 
     }
 
-    private async Task Cargar()
+    private async Task PaginaSeleccionada(int pagina)
     {
-        var responseHTTP = await _repositorio.Get<List<Persona>>("api/personas");
+        paginaActual = pagina;
+        await Cargar(pagina);
+    }
 
-        Personas = responseHTTP.Response;
+    private async Task Cargar(int pagina = 1)
+    {
+        var responseHTTP = await _repositorio.Get<List<Persona>>($"api/Personas?pagina={pagina}");
+
+        if (!responseHTTP.Error)
+        {
+            Personas = responseHTTP.Response;
+            var conteo = responseHTTP.HttpResponseMessage.Headers.GetValues("conteo").FirstOrDefault();
+            paginasTotales = int.Parse(responseHTTP.HttpResponseMessage.Headers.GetValues("totalPaginas").FirstOrDefault());
+
+        }
     }
 
     private async Task BorrarPersona(Persona persona)

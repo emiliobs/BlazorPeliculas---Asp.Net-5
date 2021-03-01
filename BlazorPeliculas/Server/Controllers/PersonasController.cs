@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
+using BlazorPeliculas.Shared.DTOs;
 using BlazorPeliculas.Shared.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,19 +25,23 @@ namespace BlazorPeliculas.Server.Controllers
         {
             _contex = contex;
             _almacenadorArchivos = almacenadorArchivos;
-            this._mapper = mapper;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Persona>>> Get()
+        public async Task<ActionResult<List<Persona>>> Get([FromQuery] PaginacionDTO paginacionDTO)
         {
-            return await _contex.Personas.ToListAsync();
+            IQueryable<Persona> queryable = _contex.Personas.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEnRespuesta(queryable, paginacionDTO.CantidadRegistros);
+
+
+            return await queryable.Paginar(paginacionDTO).ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Persona>> Get(int id)
         {
-            var persona = await _contex.Personas.FirstOrDefaultAsync(x => x.Id == id);
+            Persona persona = await _contex.Personas.FirstOrDefaultAsync(x => x.Id == id);
 
             if (persona == null)
             {
@@ -63,7 +68,7 @@ namespace BlazorPeliculas.Server.Controllers
         {
             if (!string.IsNullOrEmpty(persona.Foto))
             {
-                var fotoPersonas = Convert.FromBase64String(persona.Foto);
+                byte[] fotoPersonas = Convert.FromBase64String(persona.Foto);
                 persona.Foto = await _almacenadorArchivos.GuardarArchivo(fotoPersonas, "jpg", "personas");
             }
 
@@ -76,7 +81,7 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> Put(Persona persona)
         {
-            var personaDB = await _contex.Personas.FirstOrDefaultAsync(p => p.Id == persona.Id);
+            Persona personaDB = await _contex.Personas.FirstOrDefaultAsync(p => p.Id == persona.Id);
 
             if (personaDB == null)
             {
@@ -88,7 +93,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             if (!string.IsNullOrWhiteSpace(persona.Foto))
             {
-                var fotoImagen = Convert.FromBase64String(persona.Foto);
+                byte[] fotoImagen = Convert.FromBase64String(persona.Foto);
                 personaDB.Foto = await _almacenadorArchivos.EditarArchivo(fotoImagen,
                     "jpg", "personas", personaDB.Foto);
             }
@@ -102,7 +107,7 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var existe = await _contex.Personas.AnyAsync(g => g.Id == id);
+            bool existe = await _contex.Personas.AnyAsync(g => g.Id == id);
             if (!existe)
             {
                 return NotFound();

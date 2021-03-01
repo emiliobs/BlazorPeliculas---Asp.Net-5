@@ -23,28 +23,28 @@ namespace BlazorPeliculas.Server.Controllers
         public PeliculasController(ApplicationDbContex contex, IAlmacenadorArchivosAzStorage almacenadorArchivos,
                                    IMapper mapper)
         {
-            this._contex = contex;
-            this._almacenadorArchivos = almacenadorArchivos;
-            this._mapper = mapper;
+            _contex = contex;
+            _almacenadorArchivos = almacenadorArchivos;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<HomePageDTO>> Get()
         {
-            var limite = 5;
+            int limite = 5;
 
-            var peliculasEnCartelera = await _contex.Peliculas.Where(x => x.EnCartelera).Take(limite)
+            List<Pelicula> peliculasEnCartelera = await _contex.Peliculas.Where(x => x.EnCartelera).Take(limite)
                                             .OrderByDescending(x => x.Lanzamiento).ToListAsync();
 
-            var fechaActual = DateTime.Today;
+            DateTime fechaActual = DateTime.Today;
 
-            var proximosEstrenos = await _contex.Peliculas.Where(x => x.Lanzamiento > fechaActual).OrderBy(x => x.Lanzamiento)
+            List<Pelicula> proximosEstrenos = await _contex.Peliculas.Where(x => x.Lanzamiento > fechaActual).OrderBy(x => x.Lanzamiento)
                                          .Take(limite).ToListAsync();
 
-            return new HomePageDTO 
+            return new HomePageDTO
             {
-               PeliculasEnCartelera = peliculasEnCartelera,
-               ProximosEstrenos = proximosEstrenos,
+                PeliculasEnCartelera = peliculasEnCartelera,
+                ProximosEstrenos = proximosEstrenos,
             };
 
         }
@@ -52,7 +52,7 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PeliculaVisualizarDTO>> Get(int id)
         {
-            var pelicula = await _contex.Peliculas.Where(x => x.Id == id)
+            Pelicula pelicula = await _contex.Peliculas.Where(x => x.Id == id)
                                                   .Include(x => x.GeneroPeliculas)
                                                   .ThenInclude(x => x.Genero)
                                                   .Include(x => x.PeliculaActors)
@@ -64,24 +64,26 @@ namespace BlazorPeliculas.Server.Controllers
             }
 
             //todo: sistema de votación
-            var promedioVotos = 4;
-            var votoUsuario = 5;
+            int promedioVotos = 4;
+            int votoUsuario = 5;
 
             pelicula.PeliculaActors = pelicula.PeliculaActors.OrderBy(x => x.Orden).ToList();
 
-            var model = new PeliculaVisualizarDTO();
-            model.Pelicula = pelicula;
-            model.Generos = pelicula.GeneroPeliculas.Select(x => x.Genero).ToList();
-            model.Actores = pelicula.PeliculaActors.Select(x => new Persona
+            PeliculaVisualizarDTO model = new PeliculaVisualizarDTO
             {
-                 Nombre = x.Persona.Nombre,
-                 Foto = x.Persona.Foto,
-                 Personaje = x.Personaje,
-                 Id = x.PersonaId,
-            }).ToList();
+                Pelicula = pelicula,
+                Generos = pelicula.GeneroPeliculas.Select(x => x.Genero).ToList(),
+                Actores = pelicula.PeliculaActors.Select(x => new Persona
+                {
+                    Nombre = x.Persona.Nombre,
+                    Foto = x.Persona.Foto,
+                    Personaje = x.Personaje,
+                    Id = x.PersonaId,
+                }).ToList(),
 
-            model.PromedioVotos = promedioVotos;
-            model.VotoUsuario = votoUsuario;
+                PromedioVotos = promedioVotos,
+                VotoUsuario = votoUsuario
+            };
 
             return model;
         }
@@ -89,15 +91,15 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpGet("actualizar/{id}")]
         public async Task<ActionResult<PeliculaActualizacionDTO>> PutGet(int id)
         {
-            var peliculaActionResult = await Get(id);
+            ActionResult<PeliculaVisualizarDTO> peliculaActionResult = await Get(id);
             if (peliculaActionResult.Result is NotFoundResult)
             {
                 return NotFound();
             }
 
-            var peliculaVisualizarDTO = peliculaActionResult.Value;
-            var generosSeleccionadosIds = peliculaVisualizarDTO.Generos.Select(p => p.Id).ToList();
-            var generosNoSeleccionados = await _contex.Generos.Where(g => !generosSeleccionadosIds.Contains(g.Id)).ToListAsync();
+            PeliculaVisualizarDTO peliculaVisualizarDTO = peliculaActionResult.Value;
+            List<int> generosSeleccionadosIds = peliculaVisualizarDTO.Generos.Select(p => p.Id).ToList();
+            List<Genero> generosNoSeleccionados = await _contex.Generos.Where(g => !generosSeleccionadosIds.Contains(g.Id)).ToListAsync();
 
             return new PeliculaActualizacionDTO
             {
@@ -114,7 +116,7 @@ namespace BlazorPeliculas.Server.Controllers
         {
             if (!string.IsNullOrWhiteSpace(pelicula.Poster))
             {
-                var fotoPoster = Convert.FromBase64String(pelicula.Poster);
+                byte[] fotoPoster = Convert.FromBase64String(pelicula.Poster);
                 pelicula.Poster = await _almacenadorArchivos.GuardarArchivo(fotoPoster, "jpg", "peliculas");
             }
 
@@ -134,7 +136,7 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> Put(Pelicula pelicula)
         {
-            var peliculaDB = await _contex.Peliculas.FirstOrDefaultAsync(p => p.Id == pelicula.Id);
+            Pelicula peliculaDB = await _contex.Peliculas.FirstOrDefaultAsync(p => p.Id == pelicula.Id);
             if (peliculaDB == null)
             {
                 return NotFound();
@@ -144,7 +146,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             if (!string.IsNullOrWhiteSpace(pelicula.Poster))
             {
-                var posterImage = Convert.FromBase64String(pelicula.Poster);
+                byte[] posterImage = Convert.FromBase64String(pelicula.Poster);
                 peliculaDB.Poster = await _almacenadorArchivos.EditarArchivo(posterImage, "jpg", "peliculas", peliculaDB.Poster);
             }
 
@@ -165,13 +167,13 @@ namespace BlazorPeliculas.Server.Controllers
             await _contex.SaveChangesAsync();
 
             return NoContent();
-        
+
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var existe = await _contex.Peliculas.AnyAsync(g => g.Id == id);
+            bool existe = await _contex.Peliculas.AnyAsync(g => g.Id == id);
             if (!existe)
             {
                 return NotFound();
