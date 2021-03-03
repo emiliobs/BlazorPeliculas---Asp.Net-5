@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BlazorPeliculas.Server.Controllers.UtilitiesClasses;
 using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
 using BlazorPeliculas.Shared.DTOs;
@@ -86,6 +87,40 @@ namespace BlazorPeliculas.Server.Controllers
             };
 
             return model;
+        }
+
+        [HttpGet("filtrar")]
+        public async Task<ActionResult<List<Pelicula>>> Get([FromQuery] ParametrosBusquedaPeliculas parametrosBusquedaPeliculas)
+        {
+            IQueryable<Pelicula> peliculasQueryable = _contex.Peliculas.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(parametrosBusquedaPeliculas.Titulo))
+            {
+                peliculasQueryable = peliculasQueryable.Where(p => p.Titulo.ToLower().Contains(parametrosBusquedaPeliculas.Titulo.ToLower()));
+            }
+
+            if (parametrosBusquedaPeliculas.EnCartelera)
+            {
+                peliculasQueryable = peliculasQueryable.Where(p => p.EnCartelera);
+            }
+
+            if (parametrosBusquedaPeliculas.Estrenos)
+            {
+                DateTime hoy = DateTime.Today;
+                peliculasQueryable = peliculasQueryable.Where(p => p.Lanzamiento >= hoy);
+            }
+
+            if (parametrosBusquedaPeliculas.GeneroId != 0)
+            {
+                peliculasQueryable = peliculasQueryable.Where(p => p.GeneroPeliculas.Select(p => p.GeneroId)
+                                                       .Contains(parametrosBusquedaPeliculas.GeneroId));
+            }
+
+            //TODO: Implementar votación
+
+            await HttpContext.InsertarParametrosPaginacionEnRespuesta(peliculasQueryable, parametrosBusquedaPeliculas.CantidadRegistros);
+
+            return await peliculasQueryable.Paginar(parametrosBusquedaPeliculas.PaginacionDTO).ToListAsync();
         }
 
         [HttpGet("actualizar/{id}")]

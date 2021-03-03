@@ -1,6 +1,4 @@
-﻿using BlazorPeliculas.Shared.Entidades;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Client.Repositorios
 {
@@ -9,7 +7,7 @@ namespace BlazorPeliculas.Client.Repositorios
         Task<HttpResponseWrapper<object>> Delete(string url);
         Task<HttpResponseWrapper<T>> Get<T>(string url);
 
-        List<Pelicula> ObtenerPelicula();
+        //List<Pelicula> ObtenerPelicula();
 
         Task<HttpResponseWrapper<object>> Post<T>(string url, T enviar);
 
