@@ -1,5 +1,7 @@
+using BlazorPeliculas.Client.Auth;
 using BlazorPeliculas.Client.Helpers;
 using BlazorPeliculas.Client.Repositorios;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,7 +17,7 @@ namespace BlazorPeliculas.Client
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             ConfigureServices(builder.Services);
 
@@ -27,6 +29,9 @@ namespace BlazorPeliculas.Client
 
             services.AddScoped<IRepositorioPelicula, RepositorioPelicula>();
             services.AddScoped<IMostrarMensajes, MostrarMensajes>();
+            services.AddAuthorizationCore();
+
+            services.AddScoped<AuthenticationStateProvider, ProveedorAutenticacionPrueba>();
         }
     }
 }
