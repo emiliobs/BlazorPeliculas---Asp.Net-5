@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Security;
 
 namespace BlazorPeliculas.Client.Auth
 {
@@ -9,9 +11,14 @@ namespace BlazorPeliculas.Client.Auth
     {
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            await Task.Delay(3000);
+            //await Task.Delay(3000);
 
-            var anonimo = new ClaimsIdentity();
+            var anonimo = new ClaimsIdentity(new List<Claim>()
+            { 
+                new Claim("llave1", "valor1"),
+                new Claim(ClaimTypes.Name, "Emilio"),
+                //new Claim(ClaimTypes.Role, "Admin")
+            }, "prueba");
 
             return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonimo)));
         }
