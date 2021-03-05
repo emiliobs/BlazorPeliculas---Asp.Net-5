@@ -18,7 +18,7 @@ namespace BlazorPeliculas.Client.Auth
                 new Claim("llave1", "valor1"),
                 new Claim(ClaimTypes.Name, "Emilio"),
                 //new Claim(ClaimTypes.Role, "Admin")
-            }, "prueba");
+            });
 
             return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonimo)));
         }

@@ -2,8 +2,7 @@
 @inject IRepositorioPelicula repositorio
 @inject NavigationManager navigationManager
 @inject IMostrarMensajes  mostrarMensaje
-@attribute [Authorize(Roles = "Admoin")]
-
+@attribute [Authorize(Roles = "Admin")]
 <h3>Crear Persona</h3>
 <hr />
 <FormularioPersonas Persona="Persona" OnValidSubmit="Crear"></FormularioPersonas>

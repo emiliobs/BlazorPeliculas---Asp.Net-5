@@ -2,6 +2,7 @@ using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,11 @@ namespace BlazorPeliculas.Server
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContex>()
+                .AddDefaultTokenProviders();
+
+
 
             //Aqui utilizo Automapper:
             services.AddAutoMapper(typeof(Startup));

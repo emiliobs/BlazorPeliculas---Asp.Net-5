@@ -1,9 +1,10 @@
 ﻿using BlazorPeliculas.Shared.Entidades;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorPeliculas.Server.Datos
 {
-    public class ApplicationDbContex : DbContext
+    public class ApplicationDbContex : IdentityDbContext
     {
         public ApplicationDbContex(DbContextOptions<ApplicationDbContex> options) : base(options)
         {
