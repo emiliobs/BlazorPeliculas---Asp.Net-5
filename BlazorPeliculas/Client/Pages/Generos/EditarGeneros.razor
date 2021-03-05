@@ -2,6 +2,8 @@
 @inject IRepositorioPelicula _repositorio
 @inject IMostrarMensajes _mostrarMensasje
 @inject NavigationManager _navigationManager
+@attribute [Authorize(Roles = "Admoin")]
+
 
 <h3>Editar Géneros</h3>
 

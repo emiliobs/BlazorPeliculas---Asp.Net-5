@@ -1,6 +1,8 @@
 ﻿@page "/generos"
 @inject IRepositorioPelicula _repositorio
 @inject IMostrarMensajes _mostrarMensajes
+@attribute [Authorize(Roles = "Admoin")]
+
 
 <h3>Indice Géneros</h3>
 <hr />

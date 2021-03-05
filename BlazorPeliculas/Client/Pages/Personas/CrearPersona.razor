@@ -1,16 +1,17 @@
 ﻿@page "/personas/crear"
 @inject IRepositorioPelicula repositorio
-@inject NavigationManager navigationManager 
-@inject IMostrarMensajes  mostrarMensaje 
+@inject NavigationManager navigationManager
+@inject IMostrarMensajes  mostrarMensaje
+@attribute [Authorize(Roles = "Admoin")]
 
 <h3>Crear Persona</h3>
 <hr />
-<FormularioPersonas Persona="Persona" OnValidSubmit="Crear" ></FormularioPersonas>
+<FormularioPersonas Persona="Persona" OnValidSubmit="Crear"></FormularioPersonas>
 
 
 @code {
 
-    private  Persona Persona = new Persona();
+    private Persona Persona = new Persona();
 
     async void Crear()
     {
@@ -18,7 +19,7 @@
         if (httpResponse.Error)
         {
 
-           await mostrarMensaje.MostrarMensajesError(await httpResponse.GetBody());
+            await mostrarMensaje.MostrarMensajesError(await httpResponse.GetBody());
         }
         else
         {

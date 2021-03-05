@@ -2,6 +2,8 @@
 @inject NavigationManager navigationManager
 @inject IRepositorioPelicula repositorio
 @inject IMostrarMensajes  mostrarMensaje
+@attribute [Authorize(Roles = "Admoin")]
+
 
 <h3>Crear Generos</h3>
 

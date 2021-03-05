@@ -1,6 +1,7 @@
 ﻿@page "/personas"
 @inject IRepositorioPelicula _repositorio
 @inject IMostrarMensajes _mostrarMensajes
+@attribute [Authorize(Roles = "Admoin")]
 
 
 <h3>Indice Persona</h3>

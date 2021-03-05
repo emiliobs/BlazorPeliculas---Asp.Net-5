@@ -2,6 +2,7 @@
 @inject IRepositorioPelicula _repositorio
 @inject NavigationManager _navigationManager
 @inject IMostrarMensajes _mostrarMensaje
+@attribute [Authorize(Roles = "Admoin")]
 
 <h3>Editar Película</h3>
 <hr />
@@ -12,12 +13,11 @@
 }
 else
 {
-    <FormularioPeliculas
-                  Pelicula="Pelicula" 
-                  OnValidSubmit="Editar" 
-                 GenerosNoSeleccionados="GenerosNoSeleccionados"
-                  ActoresSeleccionados="ActotesSeleccionados" 
-                 GenerosSeleccionados="GenerosSeleccionados">
+    <FormularioPeliculas Pelicula="Pelicula"
+                         OnValidSubmit="Editar"
+                         GenerosNoSeleccionados="GenerosNoSeleccionados"
+                         ActoresSeleccionados="ActotesSeleccionados"
+                         GenerosSeleccionados="GenerosSeleccionados">
 
     </FormularioPeliculas>
 }
