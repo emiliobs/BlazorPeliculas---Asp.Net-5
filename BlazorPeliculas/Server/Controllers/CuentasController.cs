@@ -28,7 +28,7 @@ namespace BlazorPeliculas.Server.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost]
+        [HttpPost("Crear")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo userInfo)
         {
             IdentityUser user = new IdentityUser

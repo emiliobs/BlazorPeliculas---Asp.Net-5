@@ -33,6 +33,7 @@ namespace BlazorPeliculas.Server.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[AllowAnonymous]
         public async Task<ActionResult<HomePageDTO>> Get()
         {
             int limite = 5;
