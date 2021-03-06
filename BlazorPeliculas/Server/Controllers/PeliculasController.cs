@@ -4,6 +4,8 @@ using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
 using BlazorPeliculas.Shared.DTOs;
 using BlazorPeliculas.Shared.Entidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,6 +32,7 @@ namespace BlazorPeliculas.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<HomePageDTO>> Get()
         {
             int limite = 5;

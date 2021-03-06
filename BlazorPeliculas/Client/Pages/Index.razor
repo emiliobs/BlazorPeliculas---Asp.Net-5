@@ -31,8 +31,16 @@
     protected async override Task OnInitializedAsync()
     {
         var httpResponse = await repositorio.Get<HomePageDTO>("api/peliculas");
-        FuturosEstrenos = httpResponse.Response.ProximosEstrenos;
-        EnCartelera = httpResponse.Response.PeliculasEnCartelera;
+        if (httpResponse.Error)
+        {
+            Console.WriteLine(httpResponse.HttpResponseMessage.StatusCode);
+        }
+        else
+        {
+
+            FuturosEstrenos = httpResponse.Response.ProximosEstrenos;
+            EnCartelera = httpResponse.Response.PeliculasEnCartelera;
+        }
     }
 
 
