@@ -30,8 +30,13 @@ namespace BlazorPeliculas.Client
             services.AddScoped<IRepositorioPelicula, RepositorioPelicula>();
             services.AddScoped<IMostrarMensajes, MostrarMensajes>();
             services.AddAuthorizationCore();
-
-            services.AddScoped<AuthenticationStateProvider, ProveedorAutenticacionPrueba>();
+            services.AddScoped<ProveedorAutenticationJWT>();
+            services.AddScoped<AuthenticationStateProvider, ProveedorAutenticationJWT>(                
+                provider =>  provider.GetRequiredService<ProveedorAutenticationJWT>()   
+                );
+            services.AddScoped<ILoginService, ProveedorAutenticationJWT>(
+                provider => provider.GetRequiredService<ProveedorAutenticationJWT>()
+                );
         }
     }
 }
