@@ -18,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helper\" />
+    <Folder Include="wwwroot\css\font-awesome\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

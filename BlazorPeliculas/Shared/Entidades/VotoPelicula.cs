@@ -13,5 +13,7 @@ namespace BlazorPeliculas.Shared.Entidades
         public int PeliculaId { get; set; }
 
         public Pelicula Pelicula { get; set; }
+
+        public string UserId { get; set; }
     }
 }

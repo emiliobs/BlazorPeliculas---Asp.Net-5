@@ -3,7 +3,7 @@
 @inject IRepositorioPelicula _repositorio
 @inject NavigationManager _navigationManager
 @inject IMostrarMensajes _mostarMensajes
-
+   
 @if (model == null)
 {
     <text>Cargando.....</text>
@@ -23,7 +23,8 @@ else
         }
     }
     <text> |</text> <span>@model.Pelicula.Lanzamiento.Value.ToString("dd MMM yyyy")</span>
-    <text>| Promedio: </text>@model.PromedioVotos.ToString("0.#") <text>/5 | Tu Voto: </text> @model.VotoUsuario.ToString("0.#")
+    <text>| Promedio: </text>@model.PromedioVotos.ToString("0.#") <text>/5 | Tu Voto: </text>
+    <Rating MaximoPuntaje="5" PuntajeSeleccionado="model.VotoUsuario" OnVote="OnVote" />
     <div style="display:flex;">
         <span style="display:inline-block; margin-right: 5px;"><img src="@model.Pelicula.Poster" style="width: 225px;  height: 315px;" /></span>
         <iframe width="560" height="315" src="https://www.youtube.com/embed/66TuSJo4dZM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -40,14 +41,14 @@ else
             @foreach (var actor in model.Actores)
             {
                 <div style="margin-bottom: 2px;">
-                    <img  style="width: 50px;" src="@actor.Foto"/>
+                    <img style="width: 50px;" src="@actor.Foto" />
                     <span style="display:inline-block; width: 200px;"><a href="/persona/@actor.Id/@actor.Nombre.Replace(" ", "-")">@actor.Nombre</a></span>
                     <span style="display:inline-block; width: 45px;">.....</span>
                     <span>@actor.Personaje</span>
                 </div>
             }
         </div>
-        
+
     </div>
 }
 
@@ -58,26 +59,43 @@ else
     private PeliculaVisualizarDTO model;
     private RenderFragment<Genero> enlaceGenero = (Genero) =>@<a href="peliculas/buscar?generoid=@Genero.Id">@Genero.Nombre</a>;
 
-protected async override Task OnInitializedAsync()
-{
-var responseHTTP = await _repositorio.Get<PeliculaVisualizarDTO>($"api/peliculas/{PeliculaId}");
 
-if (responseHTTP.Error)
-{
-if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
-{
-_navigationManager.NavigateTo("");
-}
-else
-{
-var mensajeError = await responseHTTP.GetBody();
-await _mostarMensajes.MostrarMensajesError(mensajeError);
-}
-}
-else
-{
-model = responseHTTP.Response;
-}
 
-}
+    protected async override Task OnInitializedAsync()
+    {
+        var responseHTTP = await _repositorio.Get<PeliculaVisualizarDTO>($"api/peliculas/{PeliculaId}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _navigationManager.NavigateTo("");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetBody();
+                await _mostarMensajes.MostrarMensajesError(mensajeError);
+            }
+        }
+        else
+        {
+            model = responseHTTP.Response;
+        }
+
+    }
+
+    private async Task OnVote(int votoSeleccionado)
+    {
+        model.VotoUsuario = votoSeleccionado;
+        var votoPelicula = new VotoPelicula() { Voto = votoSeleccionado, PeliculaId = PeliculaId };
+        var responseHttp = await _repositorio.Post("api/votos", votoPelicula);
+        if (responseHttp.Error)
+        {
+            await _mostarMensajes.MostrarMensajesError("Su voto no ha sido recibido");
+        }
+        else
+        {
+            await _mostarMensajes.MostrarMensajeExitoso("Su voto ha sido recibido");
+        }
+    }
 }

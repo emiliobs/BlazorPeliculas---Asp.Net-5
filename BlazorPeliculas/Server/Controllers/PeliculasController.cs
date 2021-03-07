@@ -6,6 +6,7 @@ using BlazorPeliculas.Shared.DTOs;
 using BlazorPeliculas.Shared.Entidades;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,16 +21,18 @@ namespace BlazorPeliculas.Server.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class PeliculasController : ControllerBase
     {
-        private readonly ApplicationDbContex _contex;
+        private readonly ApplicationDbContex _context;
         private readonly IAlmacenadorArchivosAzStorage _almacenadorArchivos;
         private readonly IMapper _mapper;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PeliculasController(ApplicationDbContex contex, IAlmacenadorArchivosAzStorage almacenadorArchivos,
-                                   IMapper mapper)
+        public PeliculasController(ApplicationDbContex context, IAlmacenadorArchivosAzStorage almacenadorArchivos,
+                                   IMapper mapper, UserManager<IdentityUser> userManager) 
         {
-            _contex = contex;
+            _context = context;
             _almacenadorArchivos = almacenadorArchivos;
             _mapper = mapper;
+           _userManager = userManager;
         }
 
         [HttpGet]
@@ -38,12 +41,12 @@ namespace BlazorPeliculas.Server.Controllers
         {
             int limite = 5;
 
-            List<Pelicula> peliculasEnCartelera = await _contex.Peliculas.Where(x => x.EnCartelera).Take(limite)
+            List<Pelicula> peliculasEnCartelera = await _context.Peliculas.Where(x => x.EnCartelera).Take(limite)
                                             .OrderByDescending(x => x.Lanzamiento).ToListAsync();
 
             DateTime fechaActual = DateTime.Today;
 
-            List<Pelicula> proximosEstrenos = await _contex.Peliculas.Where(x => x.Lanzamiento > fechaActual).OrderBy(x => x.Lanzamiento)
+            List<Pelicula> proximosEstrenos = await _context.Peliculas.Where(x => x.Lanzamiento > fechaActual).OrderBy(x => x.Lanzamiento)
                                          .Take(limite).ToListAsync();
 
             return new HomePageDTO
@@ -58,7 +61,7 @@ namespace BlazorPeliculas.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<PeliculaVisualizarDTO>> Get(int id)
         {
-            Pelicula pelicula = await _contex.Peliculas.Where(x => x.Id == id)
+            Pelicula pelicula = await _context.Peliculas.Where(x => x.Id == id)
                                                   .Include(x => x.GeneroPeliculas)
                                                   .ThenInclude(x => x.Genero)
                                                   .Include(x => x.PeliculaActors)
@@ -69,27 +72,65 @@ namespace BlazorPeliculas.Server.Controllers
                 return NotFound();
             }
 
-            //todo: sistema de votación
-            int promedioVotos = 4;
-            int votoUsuario = 5;
+            // todo: sistema de votacion
+
+            var promedioVotos = 0.0;
+            var votoUsuario = 0;
+
+            if (await _context.VotoPeliculas.AnyAsync(x => x.PeliculaId == id))
+            {
+                promedioVotos = await _context.VotoPeliculas.Where(x => x.PeliculaId == id)
+                    .AverageAsync(x => x.Voto);
+
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var user = await _userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+                    var userId = user.Id;
+
+                    var votoUsuarioDB = await _context.VotoPeliculas
+                        .FirstOrDefaultAsync(x => x.PeliculaId == id && x.UserId == userId);
+
+                    if (votoUsuarioDB != null)
+                    {
+                        votoUsuario = votoUsuarioDB.Voto;
+                    }
+                }
+            }
 
             pelicula.PeliculaActors = pelicula.PeliculaActors.OrderBy(x => x.Orden).ToList();
 
-            PeliculaVisualizarDTO model = new PeliculaVisualizarDTO
+            var model = new PeliculaVisualizarDTO();
+            model.Pelicula = pelicula;
+            model.Generos = pelicula.GeneroPeliculas.Select(x => x.Genero).ToList();
+            model.Actores = pelicula.PeliculaActors.Select(x =>
+            new Persona
             {
-                Pelicula = pelicula,
-                Generos = pelicula.GeneroPeliculas.Select(x => x.Genero).ToList(),
-                Actores = pelicula.PeliculaActors.Select(x => new Persona
-                {
-                    Nombre = x.Persona.Nombre,
-                    Foto = x.Persona.Foto,
-                    Personaje = x.Personaje,
-                    Id = x.PersonaId,
-                }).ToList(),
+                Nombre = x.Persona.Nombre,
+                Foto = x.Persona.Foto,
+                Personaje = x.Personaje,
+                Id = x.PersonaId
+            }).ToList();
 
-                PromedioVotos = promedioVotos,
-                VotoUsuario = votoUsuario
-            };
+            model.PromedioVotos = promedioVotos;
+            model.VotoUsuario = votoUsuario;
+
+            // pelicula.PeliculaActors = pelicula.PeliculaActors.OrderBy(x => x.Orden).ToList();
+
+            //PeliculaVisualizarDTO model = new PeliculaVisualizarDTO
+            //{
+            //    Pelicula = pelicula,
+            //    Generos = pelicula.GeneroPeliculas.Select(x => x.Genero).ToList(),
+            //    Actores = pelicula.PeliculaActors.Select(x => new Persona
+            //    {
+            //        Nombre = x.Persona.Nombre,
+            //        Foto = x.Persona.Foto,
+            //        Personaje = x.Personaje,
+            //        Id = x.PersonaId,
+            //    }).ToList(),
+
+            //    PromedioVotos = promedioVotos,
+            //    VotoUsuario = votoUsuario
+            //};
 
             return model;
         }
@@ -98,7 +139,7 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpGet("filtrar")]
         public async Task<ActionResult<List<Pelicula>>> Get([FromQuery] ParametrosBusquedaPeliculas parametrosBusquedaPeliculas)
         {
-            IQueryable<Pelicula> peliculasQueryable = _contex.Peliculas.AsQueryable();
+            IQueryable<Pelicula> peliculasQueryable = _context.Peliculas.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(parametrosBusquedaPeliculas.Titulo))
             {
@@ -140,7 +181,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             PeliculaVisualizarDTO peliculaVisualizarDTO = peliculaActionResult.Value;
             List<int> generosSeleccionadosIds = peliculaVisualizarDTO.Generos.Select(p => p.Id).ToList();
-            List<Genero> generosNoSeleccionados = await _contex.Generos.Where(g => !generosSeleccionadosIds.Contains(g.Id)).ToListAsync();
+            List<Genero> generosNoSeleccionados = await _context.Generos.Where(g => !generosSeleccionadosIds.Contains(g.Id)).ToListAsync();
 
             return new PeliculaActualizacionDTO
             {
@@ -169,15 +210,15 @@ namespace BlazorPeliculas.Server.Controllers
                 }
 
             }
-            _contex.Add(pelicula);
-            await _contex.SaveChangesAsync();
+            _context.Add(pelicula);
+            await _context.SaveChangesAsync();
             return pelicula.Id;
         }
 
         [HttpPut]
         public async Task<ActionResult> Put(Pelicula pelicula)
         {
-            Pelicula peliculaDB = await _contex.Peliculas.FirstOrDefaultAsync(p => p.Id == pelicula.Id);
+            Pelicula peliculaDB = await _context.Peliculas.FirstOrDefaultAsync(p => p.Id == pelicula.Id);
             if (peliculaDB == null)
             {
                 return NotFound();
@@ -191,7 +232,7 @@ namespace BlazorPeliculas.Server.Controllers
                 peliculaDB.Poster = await _almacenadorArchivos.EditarArchivo(posterImage, "jpg", "peliculas", peliculaDB.Poster);
             }
 
-            await _contex.Database.ExecuteSqlInterpolatedAsync($"delete from  GeneroPeliculas where PeliculaId = {pelicula.Id}; delete from PeliculaActors where PeliculaId = {pelicula.Id}");
+            await _context.Database.ExecuteSqlInterpolatedAsync($"delete from  GeneroPeliculas where PeliculaId = {pelicula.Id}; delete from PeliculaActors where PeliculaId = {pelicula.Id}");
 
             if (pelicula.PeliculaActors != null)
             {
@@ -205,7 +246,7 @@ namespace BlazorPeliculas.Server.Controllers
             peliculaDB.PeliculaActors = pelicula.PeliculaActors;
             peliculaDB.GeneroPeliculas = pelicula.GeneroPeliculas;
 
-            await _contex.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return NoContent();
 
@@ -214,15 +255,15 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            bool existe = await _contex.Peliculas.AnyAsync(g => g.Id == id);
+            bool existe = await _context.Peliculas.AnyAsync(g => g.Id == id);
             if (!existe)
             {
                 return NotFound();
             }
 
-            _contex.Remove(new Pelicula { Id = id });
+            _context.Remove(new Pelicula { Id = id });
 
-            await _contex.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
