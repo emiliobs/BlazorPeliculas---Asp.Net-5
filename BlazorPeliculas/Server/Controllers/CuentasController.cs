@@ -52,7 +52,7 @@ namespace BlazorPeliculas.Server.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo userInfo)
         {
-            var resutl = await _signInManager.PasswordSignInAsync(userInfo.Email, userInfo.Password, isPersistent: false, 
+            var resutl = await _signInManager.PasswordSignInAsync(userInfo.Email, userInfo.Password, isPersistent: false,
                                                                   lockoutOnFailure: false);
             if (resutl.Succeeded)
             {

@@ -31,8 +31,8 @@ namespace BlazorPeliculas.Client
             services.AddScoped<IMostrarMensajes, MostrarMensajes>();
             services.AddAuthorizationCore();
             services.AddScoped<ProveedorAutenticationJWT>();
-            services.AddScoped<AuthenticationStateProvider, ProveedorAutenticationJWT>(                
-                provider =>  provider.GetRequiredService<ProveedorAutenticationJWT>()   
+            services.AddScoped<AuthenticationStateProvider, ProveedorAutenticationJWT>(
+                provider => provider.GetRequiredService<ProveedorAutenticationJWT>()
                 );
             services.AddScoped<ILoginService, ProveedorAutenticationJWT>(
                 provider => provider.GetRequiredService<ProveedorAutenticationJWT>()

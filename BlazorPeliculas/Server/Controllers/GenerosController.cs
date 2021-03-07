@@ -1,5 +1,7 @@
 ﻿using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Shared.Entidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ namespace BlazorPeliculas.Server.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class GenerosController : ControllerBase
     {
         private readonly ApplicationDbContex _contex;
@@ -19,6 +22,7 @@ namespace BlazorPeliculas.Server.Controllers.API
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Genero>>> Get()
         {
             return await _contex.Generos.ToListAsync();

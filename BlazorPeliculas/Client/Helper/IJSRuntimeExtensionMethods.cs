@@ -12,7 +12,7 @@ namespace BlazorPeliculas.Client.Helper
             return await jS.InvokeAsync<bool>("confirm", mensaje);
         }
 
-        public static ValueTask<object> SetInLocalStorage(this IJSRuntime js, string key, string content) 
+        public static ValueTask<object> SetInLocalStorage(this IJSRuntime js, string key, string content)
             => js.InvokeAsync<object>("localStorage.setItem", key, content);
 
         public static ValueTask<string> GetFromLocalStorage(this IJSRuntime js, string key)

@@ -1,13 +1,13 @@
-﻿@page "/Registro"
+﻿@page "/Login"
 @inject IRepositorioPelicula _repositorio
 @inject NavigationManager _navigationManager
-@inject ILoginService _LoginService 
+@inject ILoginService _LoginService
 @inject IMostrarMensajes _mostrarMensaje
 
-<h3>Registro</h3>
+<h3>Login</h3>
 <hr />
 
-<EditForm Model="@userInfo" OnValidSubmit="CrearUsuario">
+<EditForm Model="@userInfo" OnValidSubmit="LoginUsuario">
     <DataAnnotationsValidator />
 
     <div class="form-group">
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Registrar</button>
+    <button type="submit" class="btn btn-primary">Login</button>
 
 </EditForm>
 
@@ -35,9 +35,9 @@
 
     private UserInfo userInfo = new UserInfo();
 
-    private async Task CrearUsuario()
+    private async Task LoginUsuario()
     {
-        var httpResponse = await _repositorio.Post<UserInfo, UserToken>("api/cuentas/Crear", userInfo);
+        var httpResponse = await _repositorio.Post<UserInfo, UserToken>("api/cuentas/Login", userInfo);
 
         if (httpResponse.Error)
         {

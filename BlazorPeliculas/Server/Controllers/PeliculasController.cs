@@ -17,6 +17,7 @@ namespace BlazorPeliculas.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class PeliculasController : ControllerBase
     {
         private readonly ApplicationDbContex _contex;
@@ -32,8 +33,7 @@ namespace BlazorPeliculas.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        //[AllowAnonymous]
+       [AllowAnonymous]
         public async Task<ActionResult<HomePageDTO>> Get()
         {
             int limite = 5;
@@ -55,6 +55,7 @@ namespace BlazorPeliculas.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<PeliculaVisualizarDTO>> Get(int id)
         {
             Pelicula pelicula = await _contex.Peliculas.Where(x => x.Id == id)
@@ -93,6 +94,7 @@ namespace BlazorPeliculas.Server.Controllers
             return model;
         }
 
+        [AllowAnonymous]
         [HttpGet("filtrar")]
         public async Task<ActionResult<List<Pelicula>>> Get([FromQuery] ParametrosBusquedaPeliculas parametrosBusquedaPeliculas)
         {
