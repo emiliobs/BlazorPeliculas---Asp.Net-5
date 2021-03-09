@@ -5,7 +5,7 @@ namespace BlazorPeliculas.Client.Repositorios
 {
     public class HttpResponseWrapper<T>
     {
-        public HttpResponseWrapper(bool error, T response, HttpResponseMessage httpResponseMessage)
+        public HttpResponseWrapper(T response, bool error, HttpResponseMessage httpResponseMessage)
         {
             Error = error;
             Response = response;
@@ -13,9 +13,7 @@ namespace BlazorPeliculas.Client.Repositorios
         }
 
         public bool Error { get; set; }
-
         public T Response { get; set; }
-
         public HttpResponseMessage HttpResponseMessage { get; set; }
 
         public async Task<string> GetBody()

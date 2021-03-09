@@ -19,21 +19,23 @@
 
         [Parameter] public EventCallback<int> OnVote { get; set; }
 
+         [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
         private bool votado = false;
 
         private async Task OnClickHandle(int numeroEstrella)
         {
-            // var authState = await authenticationState;
-            //if (authState.User.Identity.IsAuthenticated)
-            //{
-            PuntajeSeleccionado = numeroEstrella;
-            votado = true;
-            await OnVote.InvokeAsync(PuntajeSeleccionado);
-            //    }
-            //else
-            //{
-            //    await mostrarMensajes.MostrarMensajesError("Debe de loguearse o registrarse para poder votar");
-            //}
+            var authState = await AuthenticationState;
+            if (authState.User.Identity.IsAuthenticated)
+            {
+                PuntajeSeleccionado = numeroEstrella;
+                votado = true;
+                await OnVote.InvokeAsync(PuntajeSeleccionado);
+            }
+            else
+            {
+                await mostrarMensajes.MostrarMensajesError("Debe de loguearse o registrarse para poder votar");
+            }
         }
 
         private void OnMouseOverHandle(int numeroEstrella)
