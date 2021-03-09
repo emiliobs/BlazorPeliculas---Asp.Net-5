@@ -27,16 +27,16 @@ namespace BlazorPeliculas.Server.Controllers
         private readonly UserManager<IdentityUser> _userManager;
 
         public PeliculasController(ApplicationDbContex context, IAlmacenadorArchivosAzStorage almacenadorArchivos,
-                                   IMapper mapper, UserManager<IdentityUser> userManager) 
+                                   IMapper mapper, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _almacenadorArchivos = almacenadorArchivos;
             _mapper = mapper;
-           _userManager = userManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
-       [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult<HomePageDTO>> Get()
         {
             int limite = 5;
@@ -74,8 +74,8 @@ namespace BlazorPeliculas.Server.Controllers
 
             // todo: sistema de votacion
 
-            var promedioVotos = 0.0;
-            var votoUsuario = 0;
+            double promedioVotos = 0.0;
+            int votoUsuario = 0;
 
             if (await _context.VotoPeliculas.AnyAsync(x => x.PeliculaId == id))
             {
@@ -84,11 +84,11 @@ namespace BlazorPeliculas.Server.Controllers
 
                 if (HttpContext.User.Identity.IsAuthenticated)
                 {
-                    var user = await _userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
-                    var userId = user.Id;
+                    IdentityUser user = await _userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+                    //string userId = user.Id;
 
-                    var votoUsuarioDB = await _context.VotoPeliculas
-                        .FirstOrDefaultAsync(x => x.PeliculaId == id && x.UserId == userId);
+                    VotoPelicula votoUsuarioDB = await _context.VotoPeliculas
+                        .FirstOrDefaultAsync(x => x.PeliculaId == id && x.UserId == user.Id);
 
                     if (votoUsuarioDB != null)
                     {
@@ -114,6 +114,8 @@ namespace BlazorPeliculas.Server.Controllers
             model.PromedioVotos = promedioVotos;
             model.VotoUsuario = votoUsuario;
 
+            return model;
+
             // pelicula.PeliculaActors = pelicula.PeliculaActors.OrderBy(x => x.Orden).ToList();
 
             //PeliculaVisualizarDTO model = new PeliculaVisualizarDTO
@@ -132,7 +134,7 @@ namespace BlazorPeliculas.Server.Controllers
             //    VotoUsuario = votoUsuario
             //};
 
-            return model;
+            //return model;
         }
 
         [AllowAnonymous]

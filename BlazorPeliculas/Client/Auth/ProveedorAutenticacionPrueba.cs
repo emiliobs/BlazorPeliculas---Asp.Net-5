@@ -7,11 +7,11 @@ namespace BlazorPeliculas.Client.Auth
 {
     public class ProveedorAutenticacionPrueba : AuthenticationStateProvider
     {
-        public async override Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             //await Task.Delay(3000);
 
-            var anonimo = new ClaimsIdentity(new List<Claim>()
+            ClaimsIdentity anonimo = new ClaimsIdentity(new List<Claim>()
             {
                 new Claim("llave1", "valor1"),
                 new Claim(ClaimTypes.Name, "Emilio"),

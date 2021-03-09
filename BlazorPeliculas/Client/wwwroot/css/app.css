@@ -1,5 +1,7 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+
+
 h1{
     color:green;
 }
@@ -253,4 +255,8 @@ a, .btn-link {
         transform: scale(1.0);
         opacity: 0;
     }
+}
+
+.checked {
+    color: red;
 }

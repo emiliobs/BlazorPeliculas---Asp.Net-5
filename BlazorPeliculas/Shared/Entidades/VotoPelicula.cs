@@ -8,7 +8,7 @@ namespace BlazorPeliculas.Shared.Entidades
 
         public int Voto { get; set; }
 
-        public DateTime? FechaVoto { get; set; }
+        public DateTime FechaVoto { get; set; }
 
         public int PeliculaId { get; set; }
 

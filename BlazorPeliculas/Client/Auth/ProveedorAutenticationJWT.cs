@@ -51,10 +51,10 @@ namespace BlazorPeliculas.Client.Auth
 
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
-            var claims = new List<Claim>();
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            List<Claim> claims = new List<Claim>();
+            string payload = jwt.Split('.')[1];
+            byte[] jsonBytes = ParseBase64WithoutPadding(payload);
+            Dictionary<string, object> keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
             keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
 
@@ -62,9 +62,9 @@ namespace BlazorPeliculas.Client.Auth
             {
                 if (roles.ToString().Trim().StartsWith("["))
                 {
-                    var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
+                    string[] parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
 
-                    foreach (var parsedRole in parsedRoles)
+                    foreach (string parsedRole in parsedRoles)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, parsedRole));
                     }
@@ -95,7 +95,7 @@ namespace BlazorPeliculas.Client.Auth
         public async Task Login(string token)
         {
             await _jS.SetInLocalStorage(TOKENKEY, token);
-            var autState = ConstruirAuthenticationState(token);
+            AuthenticationState autState = ConstruirAuthenticationState(token);
             NotifyAuthenticationStateChanged(Task.FromResult(autState));
         }
 

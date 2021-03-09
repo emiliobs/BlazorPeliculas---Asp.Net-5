@@ -23,7 +23,7 @@ namespace BlazorPeliculas.Server.Datos
 
         public DbSet<VotoPelicula> VotoPeliculas { get; set; }
 
-       
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

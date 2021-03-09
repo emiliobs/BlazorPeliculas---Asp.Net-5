@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorPeliculas.Server.Controllers
@@ -29,11 +27,11 @@ namespace BlazorPeliculas.Server.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult> Votar(VotoPelicula votoPelicula)
+        public async Task<ActionResult> Votar(VotoPelicula votoPelicula)        
         {
-            var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
-            var userId = user.Id;
-            var votoActual = await context.VotoPeliculas
+            IdentityUser user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+            string userId = user.Id;
+            VotoPelicula votoActual = await context.VotoPeliculas
                 .FirstOrDefaultAsync(x => x.PeliculaId == votoPelicula.PeliculaId && x.UserId == userId);
 
             if (votoActual == null)
