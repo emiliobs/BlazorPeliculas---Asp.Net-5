@@ -1,4 +1,5 @@
 ﻿using BlazorPeliculas.Shared.Entidades;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,15 @@ namespace BlazorPeliculas.Server.Datos
             modelBuilder.Entity<GeneroPelicula>().HasKey(gp => new { gp.GeneroId, gp.PeliculaId });
 
             modelBuilder.Entity<PeliculaActor>().HasKey(pa => new { pa.PeliculaId, pa.PersonaId });
+
+            var rolAdmin = new IdentityRole
+            {
+                Id = "029f95ca-e58e-4bde-ac45-2617ed3e2609",
+                Name = "Admin",
+                NormalizedName = "Admin",
+            };
+
+            modelBuilder.Entity<IdentityRole>().HasData(rolAdmin);
 
             //SeedData:
 

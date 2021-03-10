@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -41,7 +42,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             if (result.Succeeded)
             {
-                return BuildToken(userInfo);
+                return BuildToken(userInfo, new List<string>());
             }
             else
             {
@@ -56,7 +57,10 @@ namespace BlazorPeliculas.Server.Controllers
                                                                   lockoutOnFailure: false);
             if (resutl.Succeeded)
             {
-                return BuildToken(userInfo);
+                IdentityUser usurios = await _userManager.FindByEmailAsync(userInfo.Email);
+                var roles = await _userManager.GetRolesAsync(usurios);
+
+                return BuildToken(userInfo, roles);
             }
             else
             {
@@ -64,15 +68,21 @@ namespace BlazorPeliculas.Server.Controllers
             }
         }
 
-        private UserToken BuildToken(UserInfo userInfo)
+        private UserToken BuildToken(UserInfo userInfo, IList<string> roles)
         {
-            Claim[] claims = new[]
+            List<Claim> claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
                 new Claim(ClaimTypes.Name, userInfo.Email),
                 new Claim("MiValor","Lo que yo quiera"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            foreach (string role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+
+            }
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             SigningCredentials credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
