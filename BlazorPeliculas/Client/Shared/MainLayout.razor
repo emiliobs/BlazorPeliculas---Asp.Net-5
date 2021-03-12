@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject RenovadorToken _renovadorToken
+
 
 <div class="page">
     <div class="sidebar">
@@ -11,9 +13,16 @@
             <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
         </div>
 
-        <div class="content px-4">         
-                @Body 
+        <div class="content px-4">
+            @Body
         </div>
     </div>
 </div>
 
+@code{
+
+    protected override void OnInitialized()
+    {
+        _renovadorToken.Iniciar();
+    }
+}

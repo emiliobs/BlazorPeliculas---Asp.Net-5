@@ -1,5 +1,7 @@
 ﻿
 using BlazorPeliculas.Shared.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -68,6 +70,21 @@ namespace BlazorPeliculas.Server.Controllers
             }
         }
 
+        [HttpGet("RenovarToken")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<UserToken>> Renovar()
+        {
+            var userInfo = new UserInfo()
+            {
+                Email = HttpContext.User.Identity.Name
+            };
+
+            var usuario = await _userManager.FindByEmailAsync(userInfo.Email);
+            var roles = await _userManager.GetRolesAsync(usuario);
+
+            return BuildToken(userInfo, roles);
+        }
+
         private UserToken BuildToken(UserInfo userInfo, IList<string> roles)
         {
             List<Claim> claims = new List<Claim>()
@@ -86,7 +103,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             SigningCredentials credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            DateTime experation = DateTime.UtcNow.AddHours(1);
+            DateTime experation = DateTime.UtcNow.AddMinutes(5);
             JwtSecurityToken token = new JwtSecurityToken(
                   issuer: null,
                   audience: null,
