@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject RenovadorToken _renovadorToken
-
+@inject IJSRuntime _js
+@inject NavigationManager _navigationManager
 
 <div class="page">
     <div class="sidebar">
@@ -21,8 +22,23 @@
 
 @code{
 
-    protected override void OnInitialized()
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected async override Task OnInitializedAsync()
     {
+
         _renovadorToken.Iniciar();
+       //await _js.InicializarTimerInactivo(DotNetObjectReference.Create(this));
+    }
+
+    [JSInvokable]
+    public async Task Logout()
+    {
+        var authState = await AuthenticationState;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            //Descomentar para activar deslogueo automático
+            _navigationManager.NavigateTo("logout");
+        }
     }
 }

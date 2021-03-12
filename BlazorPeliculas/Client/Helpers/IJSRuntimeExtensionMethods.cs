@@ -5,6 +5,12 @@ namespace BlazorPeliculas.Client.Helper
 {
     public static class IJSRuntimeExtensionMethods
     {
+        public static async ValueTask InicializarTimerInactivo<T>(this IJSRuntime js,
+            DotNetObjectReference<T> dotNetObjectReference) where T : class
+        {
+            await js.InvokeVoidAsync("timerInactivo", dotNetObjectReference);
+        }
+
         public static async ValueTask<bool> Confirm(this IJSRuntime jS, string mensaje)
         {
             await jS.InvokeVoidAsync("console.log", "Pruena de console log");
