@@ -6,7 +6,7 @@ namespace BlazorPeliculas.Client.Auth
     public interface ILoginService
     {
         //Task Login(string token);
-       Task Login(UserToken userToken);
+        Task Login(UserToken userToken);
         Task Logout();
         Task ManejadorRenovacionToken();
     }

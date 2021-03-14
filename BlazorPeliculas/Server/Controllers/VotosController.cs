@@ -28,7 +28,7 @@ namespace BlazorPeliculas.Server.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult> Votar(VotoPelicula votoPelicula)        
+        public async Task<ActionResult> Votar(VotoPelicula votoPelicula)
         {
             IdentityUser user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
             string userId = user.Id;

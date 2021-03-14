@@ -5,7 +5,7 @@ namespace BlazorPeliculas.Client.Auth
 {
     public class RenovadorToken : IDisposable
     {
-      
+
         private readonly ILoginService _loginService;
 
         public RenovadorToken(ILoginService loginService)
@@ -14,7 +14,7 @@ namespace BlazorPeliculas.Client.Auth
         }
 
         Timer timer;
-        
+
 
         public void Iniciar()
         {

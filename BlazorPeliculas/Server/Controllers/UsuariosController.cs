@@ -52,7 +52,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             return NoContent();
         }
-               
+
 
         [HttpPost("removeRol")]
         public async Task<ActionResult> RemoveRolUsuario(EditarRolDTO editarRolDTO)

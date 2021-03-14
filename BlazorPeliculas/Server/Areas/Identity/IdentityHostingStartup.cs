@@ -1,11 +1,4 @@
-﻿using System;
-using BlazorPeliculas.Server.Datos;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Hosting;
 
 [assembly: HostingStartup(typeof(BlazorPeliculas.Server.Areas.Identity.IdentityHostingStartup))]
 namespace BlazorPeliculas.Server.Areas.Identity
@@ -14,7 +7,8 @@ namespace BlazorPeliculas.Server.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
+            builder.ConfigureServices((context, services) =>
+            {
             });
         }
     }

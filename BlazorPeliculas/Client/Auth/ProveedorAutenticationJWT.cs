@@ -171,7 +171,7 @@ namespace BlazorPeliculas.Client.Auth
             NotifyAuthenticationStateChanged(Task.FromResult(Anonimo));
         }
 
-       private async Task Limpiar()
+        private async Task Limpiar()
         {
             await _jS.RemoveItem(TOKENKEY);
             await _jS.RemoveItem(EXPIRATIONTOKENKEY);
