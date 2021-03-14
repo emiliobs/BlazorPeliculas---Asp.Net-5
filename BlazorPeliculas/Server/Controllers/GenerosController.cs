@@ -11,7 +11,7 @@ namespace BlazorPeliculas.Server.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class GenerosController : ControllerBase
     {
         private readonly ApplicationDbContex _contex;

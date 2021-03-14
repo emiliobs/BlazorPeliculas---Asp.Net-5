@@ -1,13 +1,16 @@
 ﻿using BlazorPeliculas.Shared.Entidades;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace BlazorPeliculas.Server.Datos
 {
-    public class ApplicationDbContex : IdentityDbContext
+    public class ApplicationDbContex : ApiAuthorizationDbContext<IdentityUser>
     {
-        public ApplicationDbContex(DbContextOptions<ApplicationDbContex> options) : base(options)
+        public ApplicationDbContex(DbContextOptions<ApplicationDbContex> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
 
         }

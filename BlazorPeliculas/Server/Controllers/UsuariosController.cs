@@ -14,7 +14,7 @@ namespace BlazorPeliculas.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin")]
     public class UsuariosController : ControllerBase
     {
         private readonly ApplicationDbContex _context;
@@ -52,7 +52,7 @@ namespace BlazorPeliculas.Server.Controllers
 
             return NoContent();
         }
-               
+
 
         [HttpPost("removeRol")]
         public async Task<ActionResult> RemoveRolUsuario(EditarRolDTO editarRolDTO)
