@@ -13,6 +13,7 @@ namespace BlazorPeliculas.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class VotosController : ControllerBase
     {
         private readonly ApplicationDbContex context;
