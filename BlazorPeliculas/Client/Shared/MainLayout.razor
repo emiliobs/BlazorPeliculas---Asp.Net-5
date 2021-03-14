@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-
+@inject RenovadorToken _renovadorToken
 @inject IJSRuntime _js
 @inject NavigationManager _navigationManager
 
@@ -27,7 +27,7 @@
     protected async override Task OnInitializedAsync()
     {
 
-       // _renovadorToken.Iniciar();
+        _renovadorToken.Iniciar();
        //await _js.InicializarTimerInactivo(DotNetObjectReference.Create(this));
     }
 

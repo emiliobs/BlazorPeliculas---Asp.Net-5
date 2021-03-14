@@ -1,4 +1,4 @@
-
+using BlazorPeliculas.Client.Auth;
 using BlazorPeliculas.Client.Helpers;
 using BlazorPeliculas.Client.Repositorios;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -30,7 +30,15 @@ namespace BlazorPeliculas.Client
             services.AddScoped<IRepositorioPelicula, RepositorioPelicula>();
             services.AddScoped<IMostrarMensajes, MostrarMensajes>();
             services.AddAuthorizationCore();
-            services.AddApiAuthorization();
+            services.AddScoped<ProveedorAutenticationJWT>();
+           
+             services.AddScoped<AuthenticationStateProvider, ProveedorAutenticationJWT>(
+                provider => provider.GetRequiredService<ProveedorAutenticationJWT>());
+
+            services.AddScoped<ILoginService, ProveedorAutenticationJWT>(
+               provider => provider.GetRequiredService<ProveedorAutenticationJWT>());
+
+            services.AddScoped<RenovadorToken>();
         }
     }
 }

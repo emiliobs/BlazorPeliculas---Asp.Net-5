@@ -1,6 +1,5 @@
 using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Server.Helpars;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,33 +33,21 @@ namespace BlazorPeliculas.Server
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //todo edentity:
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContex>()
+                .AddDefaultTokenProviders();
 
-            //services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContex>()
-            //    .AddDefaultTokenProviders();
-            services.AddDefaultIdentity<IdentityUser>(options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContex>();
-
-            services.AddIdentityServer().AddApiAuthorization<IdentityUser, ApplicationDbContex>();
-
-            services.AddAuthentication().AddIdentityServerJwt();
-
-
-
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            //{
-            //    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-            //    {
-            //        ValidateIssuer = false,
-            //        ValidateAudience = false,
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["jwt:key"])),
-            //        ClockSkew = TimeSpan.Zero
-            //    };
-            //});
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["jwt:key"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
 
             //Aqui utilizo Automapper:
@@ -75,7 +62,6 @@ namespace BlazorPeliculas.Server
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-
             services.AddRazorPages();
         }
 
@@ -99,8 +85,6 @@ namespace BlazorPeliculas.Server
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
 

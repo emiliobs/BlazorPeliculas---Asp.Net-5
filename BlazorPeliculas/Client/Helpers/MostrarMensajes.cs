@@ -26,7 +26,7 @@ namespace BlazorPeliculas.Client.Helpers
 
         private async ValueTask MostrarMensaje(string titulo, string mensaje, string tipoMensaja)
         {
-            await _jS.InvokeVoidAsync("Swal.fire", titulo, mensaje, tipoMensaja);
+            await _jS.InvokeVoidAsync("Swal.fire",titulo, mensaje, tipoMensaja);
         }
     }
 }
