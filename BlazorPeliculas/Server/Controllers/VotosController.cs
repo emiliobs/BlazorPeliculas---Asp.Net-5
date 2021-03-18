@@ -1,6 +1,5 @@
 ﻿using BlazorPeliculas.Server.Datos;
 using BlazorPeliculas.Shared.Entidades;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +26,7 @@ namespace BlazorPeliculas.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         public async Task<ActionResult> Votar(VotoPelicula votoPelicula)
         {
             IdentityUser user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);

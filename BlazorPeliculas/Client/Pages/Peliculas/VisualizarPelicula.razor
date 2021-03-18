@@ -63,7 +63,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        var responseHTTP = await _repositorio.Get<PeliculaVisualizarDTO>($"api/peliculas/{PeliculaId}");
+        var responseHTTP = await _repositorio.Get<PeliculaVisualizarDTO>($"api/peliculas/{PeliculaId}", incluirToken: false);
 
         if (responseHTTP.Error)
         {

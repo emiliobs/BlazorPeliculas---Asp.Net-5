@@ -5,7 +5,7 @@ namespace BlazorPeliculas.Client.Repositorios
     public interface IRepositorioPelicula
     {
         Task<HttpResponseWrapper<object>> Delete(string url);
-        Task<HttpResponseWrapper<T>> Get<T>(string url);
+        Task<HttpResponseWrapper<T>> Get<T>(string url, bool incluirToken = true);
 
         //List<Pelicula> ObtenerPelicula();
 

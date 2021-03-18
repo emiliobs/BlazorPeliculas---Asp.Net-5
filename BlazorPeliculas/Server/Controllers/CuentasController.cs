@@ -1,6 +1,5 @@
 ﻿
 using BlazorPeliculas.Shared.DTOs;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -71,7 +70,7 @@ namespace BlazorPeliculas.Server.Controllers
         }
 
         [HttpGet("RenovarToken")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         public async Task<ActionResult<UserToken>> Renovar()
         {
             var userInfo = new UserInfo()
