@@ -115,7 +115,7 @@
 
     private async Task ObtenerGeneros()
     {
-        var httpResponse = await RepositorioPelicula.Get<List<Genero>>("api/Generos");
+        var httpResponse = await RepositorioPelicula.Get<List<Genero>>("api/Generos", incluirToken: false);
         Generos = httpResponse.Response;
     }
 
@@ -142,7 +142,7 @@
 
     private async Task RealizarBusqueda(string queryString)
     {
-        var httpResponse = await RepositorioPelicula.Get<List<Pelicula>>("api/peliculas/filtrar?"+queryString);
+        var httpResponse = await RepositorioPelicula.Get<List<Pelicula>>("api/peliculas/filtrar?"+queryString, incluirToken: false);
         paginasTotales = int.Parse(httpResponse.HttpResponseMessage.Headers.GetValues("totalPaginas").FirstOrDefault());
         Peliculas = httpResponse.Response;
     }

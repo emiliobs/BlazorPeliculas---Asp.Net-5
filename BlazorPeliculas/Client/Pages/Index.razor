@@ -30,7 +30,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var httpResponse = await repositorio.Get<HomePageDTO>("api/peliculas");
+        var httpResponse = await repositorio.Get<HomePageDTO>("api/peliculas", incluirToken: false);
         if (httpResponse.Error)
         {
             Console.WriteLine(httpResponse.HttpResponseMessage.StatusCode);
